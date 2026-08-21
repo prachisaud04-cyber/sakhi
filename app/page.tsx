@@ -1,6 +1,6 @@
 'use client'
 import {useState} from 'react'
-import {ShieldCheck,Shield,MapPin,Route,Users,Bell,ChevronRight,ArrowLeft,AlertTriangle,Siren,Check as CheckIcon,LockKeyhole,Clock3,HeartPulse,Navigation,Phone,Sparkles,Home as HomeIcon,Activity,BatteryMedium,Wifi} from 'lucide-react'
+import {ShieldCheck,Shield,MapPin,Route,Users,Bell,ChevronRight,ArrowLeft,AlertTriangle,Siren,Check as CheckIcon,LockKeyhole,Clock3,HeartPulse,Navigation,Phone,Sparkles,Home as HomeIcon,Activity,BatteryMedium,Wifi,Hospital} from 'lucide-react'
 type Screen='home'|'start'|'routes'|'live'|'check'|'emergency'|'contact'|'map'|'journeys'|'profile'|'privacy'
 const cn=(...a:any[])=>a.filter(Boolean).join(' ')
 const Card=({children,className='',onClick}:any)=><div onClick={onClick} className={cn('card',onClick&&'clickable',className)}>{children}</div>
