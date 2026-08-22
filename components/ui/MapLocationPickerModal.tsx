@@ -14,6 +14,7 @@ import {
   X,
 } from 'lucide-react'
 import { GPSLocation } from '@/types'
+import { GOOGLE_MAPS_API_KEY } from '@/constants/mapData'
 
 interface MapLocationPickerModalProps {
   isOpen: boolean
@@ -56,7 +57,7 @@ export const MapLocationPickerModal: React.FC<MapLocationPickerModalProps> = ({
   const [selectedAddress, setSelectedAddress] = useState<string>('Locating on map...')
   const [isGeocoding, setIsGeocoding] = useState<boolean>(false)
 
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
+  const apiKey = GOOGLE_MAPS_API_KEY
 
   // Browser Client Reverse Geocode
   const reverseGeocode = (lat: number, lng: number) => {

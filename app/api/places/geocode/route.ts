@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { GOOGLE_MAPS_API_KEY } from '@/constants/mapData'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,7 +12,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'lat and lng are required' }, { status: 400 })
   }
 
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
+  const apiKey = GOOGLE_MAPS_API_KEY
   if (!apiKey) {
     return NextResponse.json({ error: 'Google Maps API key missing' }, { status: 500 })
   }

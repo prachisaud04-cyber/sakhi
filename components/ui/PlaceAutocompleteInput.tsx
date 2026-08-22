@@ -23,7 +23,7 @@ import {
   X,
 } from 'lucide-react'
 import { GPSLocation } from '@/types'
-import { SAFETY_POIS } from '@/constants/mapData'
+import { GOOGLE_MAPS_API_KEY, SAFETY_POIS } from '@/constants/mapData'
 import { JALUKBARI_AND_GUWAHATI_DIRECTORY } from '@/constants/jalukbariData'
 import { MapLocationPickerModal } from '@/components/ui/MapLocationPickerModal'
 
@@ -113,7 +113,7 @@ export const PlaceAutocompleteInput: React.FC<PlaceAutocompleteInputProps> = ({
   const dummyDivRef = useRef<HTMLDivElement | null>(null)
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || ''
+  const apiKey = GOOGLE_MAPS_API_KEY
 
   // Sync external value changes
   useEffect(() => {
