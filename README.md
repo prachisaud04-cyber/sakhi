@@ -116,6 +116,4 @@ The current version demonstrates the complete SAKHI user experience using simula
 
 **SAKHI — Intelligent Personal Safety Companion**
 
-*TigmaMinds Academy Hackathon 2026*
-
 </div>
