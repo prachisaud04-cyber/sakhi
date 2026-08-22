@@ -1,33 +1,121 @@
-# sakhi
+<div align="center">
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [v0](https://v0.app).
+# SAKHI
 
-## Built with v0
+### Intelligent Personal Safety Companion
 
-This repository is linked to a [v0](https://v0.app) project. You can continue developing by visiting the link below -- start new chats to make changes, and v0 will push commits directly to this repo. Every merge to `main` will automatically deploy.
+**Privacy-first protection for every journey.**
 
-[Continue working on v0 →](https://v0.app/chat/projects/prj_R93CumWmg0tdwo3qHOVPeeQqjZ1Z)
+**Team NEXORA · TigmaMinds Academy Hackathon 2026**
 
-## Getting Started
+</div>
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+## About SAKHI
+
+SAKHI is a privacy-first intelligent safety application designed for women travelling alone. It creates a temporary Safety Journey and analyses contextual signals such as location, route behaviour, movement, and environmental risk to identify potential safety concerns.
+
+> **Protection when you need it. Privacy when you don't.**
+
+## What Makes SAKHI Different
+
+* **Temporary Protection**  
+  Location monitoring is active only during a Safety Journey.
+
+* **Contextual Risk Detection**  
+  Multiple signals are combined instead of relying on a single sensor.
+
+* **Controlled Emergency Sharing**  
+  Only selected information is shared when escalation is required.
+
+## Core Experience
+
+```text
+Start Journey
+      ↓
+Route Safety Analysis
+      ↓
+Temporary Monitoring
+      ↓
+Risk Detection
+      ↓
+Safety Check
+      ↓
+Emergency Escalation
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+* 🛡️ Safety Journey
+* 🗺️ Smart Route Safety Score
+* 🤖 Multi-Signal Risk Detection
+* 📱 Phone Sensor Monitoring
+* ⚠️ Discreet Safety Check
+* 🚨 Emergency Escalation
+* 🔐 Privacy Controls
+* 📩 Emergency Contact Alerts
+* 🧳 Temporary Safety Capsule
+* ❤️ Optional Wearable Integration
 
-## Learn More
+## Privacy First
 
-To learn more, take a look at the following resources:
+* **Normal** → No active journey tracking
+* **Safety Journey** → Temporary monitoring
+* **Emergency** → Selected information shared
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-- [v0 Documentation](https://v0.app/docs) - learn about v0 and how to use it.
+> SAKHI is designed around temporary protection rather than permanent surveillance.
+
+## Technology
+
+| Layer | Technology |
+| --- | --- |
+| Frontend | Next.js / React |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| UI | shadcn/ui |
+| Icons | Lucide |
+| Data | Mock sensor & health data |
+
+## Demo
+
+| Scenario | Risk Score | State |
+| --- | ---: | --- |
+| Normal Journey | 18/100 | 🟢 Normal |
+| Suspicious Situation | 67/100 | 🟡 Attention |
+| Critical Situation | 91/100 | 🔴 Critical |
+
+### Critical Demo Flow
+
+```text
+Risk Detected
+→ Safety Check
+→ No Response
+→ Emergency Protocol
+→ Contact Notification
+```
+
+## Project Status
+
+**Hackathon Prototype**
+
+The current version demonstrates the complete SAKHI user experience using simulated sensor and health data. Real sensor and wearable integrations can be added in future versions.
+
+## Future Scope
+
+* Wearable integration
+* Advanced anomaly detection
+* Community safety intelligence
+* Emergency-service integration
+
+---
+
+<div align="center">
+
+### NEXORA
+
+**SAKHI — Intelligent Personal Safety Companion**
+
+*TigmaMinds Academy Hackathon 2026*
+
+</div>

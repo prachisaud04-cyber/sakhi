@@ -1,23 +1,274 @@
 'use client'
-import {useState} from 'react'
-import {ShieldCheck,Shield,MapPin,Route,Users,Bell,ChevronRight,ArrowLeft,AlertTriangle,Siren,Check as CheckIcon,LockKeyhole,Clock3,HeartPulse,Navigation,Phone,Sparkles,Home as HomeIcon,Activity,BatteryMedium,Wifi,Hospital} from 'lucide-react'
-type Screen='home'|'start'|'routes'|'live'|'check'|'emergency'|'contact'|'map'|'journeys'|'profile'|'privacy'
-const cn=(...a:any[])=>a.filter(Boolean).join(' ')
-const Card=({children,className='',onClick}:any)=><div onClick={onClick} className={cn('card',onClick&&'clickable',className)}>{children}</div>
-const Pill=({children,tone='safe'}:any)=><span className={cn('pill',tone)}><i/>{children}</span>
-function Ring({score,tone='safe'}:any){return <div className={cn('ring',tone)} style={{'--score':score*3.6+'deg'} as any}><b>{score}<small>/100</small></b></div>}
-function Header({title,back}:any){return <header>{back?<button className="icon" onClick={back}><ArrowLeft/></button>:<div className="brand"><ShieldCheck/><b>SAKHI<small>SAFETY COMPANION</small></b></div>}<h2>{title}</h2><button className="icon"><Bell/></button></header>}
-function Map({danger=false}:any){return <div className={cn('map',danger&&'danger-map')}><div className="route-line"/><div className="pin one"/><div className="pin two"/>{danger&&<div className="risk-zone"><AlertTriangle/></div>}<span>12th Main</span><span>100 Feet Road</span><span>Narengi</span></div>}
-function Nav({go,screen}:any){return <nav>{[['home',HomeIcon,'Home'],['journeys',Route,'Journeys'],['map',MapPin,'Safety map'],['profile',Users,'Profile']].map(([s,I,l]:any)=><button className={screen===s?'active':''} onClick={()=>go(s)} key={s}><I/><small>{l}</small></button>)}</nav>}
-export default function Page(){const[screen,setScreen]=useState<Screen>('home');const[score,setScore]=useState(92);const[mode,setMode]=useState('normal');const[toast,setToast]=useState('');const go=(s:Screen)=>setScreen(s);const note=(x:string)=>{setToast(x);setTimeout(()=>setToast(''),2200)};const demo=(m:string)=>{setMode(m);setScore(m==='normal'?92:m==='suspicious'?67:91);go(m==='normal'?'live':'check');note('Demo scenario started')};let page:any;if(screen==='home')page=<Home go={go} demo={demo}/>;if(screen==='start')page=<Start go={go}/>;if(screen==='routes')page=<Routes go={go}/>;if(screen==='live')page=<Live go={go} score={score} mode={mode}/>;if(screen==='check')page=<Check go={go} score={score} mode={mode}/>;if(screen==='emergency')page=<Emergency go={go} score={score}/>;if(screen==='contact')page=<Contact go={go} score={score}/>;if(screen==='map')page=<MapPage/>;if(screen==='journeys')page=<Journeys/>;if(screen==='profile')page=<Profile go={go}/>;if(screen==='privacy')page=<Privacy/>;return <main className="shell">{page}{['home','journeys','map','profile'].includes(screen)&&<Nav go={go} screen={screen}/>} {toast&&<div className="toast"><CheckIcon/>{toast}</div>}</main>}
-function Home({go,demo}:any){return <><Header/><div className="content"><div className="hero"><small className="eyebrow">PRIVACY-FIRST PROTECTION</small><h1>Welcome to<br/><em>SAKHI.</em></h1><p>Your safety companion for every journey.</p></div><button className="cta" onClick={()=>go('start')}><Shield/><span><b>Start Safety Journey</b><small>Protection for the journey ahead</small></span><ChevronRight/></button><Card className="privacy"><LockKeyhole/><span><b>Privacy Protected</b><small>Location sharing is currently OFF.</small></span><ChevronRight/></Card><div className="section"><b>Emergency contacts</b><button onClick={()=>go('profile')}>Manage</button></div><Card className="row"><Users/><span><b>Ananya Rao &amp; Meera Shah</b><small>2 contacts selected</small></span><ChevronRight/></Card><div className="section"><b>Recent journeys</b><button onClick={()=>go('journeys')}>View all</button></div><Card className="row"><Route/><span><b>Gauhati University → Narengi</b><small>Today, 8:42 PM · 28 min · No anomalies</small></span><strong>96<small>/100</small></strong></Card><Card className="demo"><Sparkles/><span><b>Demo mode</b><small>Run a contextual risk scenario</small></span><div><button onClick={()=>demo('normal')}>Normal</button><button onClick={()=>demo('suspicious')}>Suspicious</button><button onClick={()=>demo('critical')}>Critical</button></div></Card></div></>}
-function Start({go}:any){return <><Header title="Start a journey" back={()=>go('home')}/><div className="content"><div className="intro"><Shield/><h1>Travel with<br/><em>confidence.</em></h1><p>Tell SAKHI where you&apos;re going. We&apos;ll quietly watch for contextual anomalies along the way.</p></div><label>Where are you going<input defaultValue="Narengi, Bengaluru"/></label><label>Expected arrival<input defaultValue="Today, 9:10 PM"/></label><div className="field">Emergency contact</div><Card className="row"><span className="avatar">AR</span><span><b>Ananya Rao</b><small>Sister · Selected</small></span><CheckIcon/></Card><div className="field">Protection level</div><Card className="row selected"><ShieldCheck/><span><b>Balanced</b><small>Smart contextual monitoring</small></span><CheckIcon/></Card><Card className="privacy"><HeartPulse/><span><b>Optional health data</b><small>SAKHI works without a smartwatch.</small></span><button className="toggle"><i/></button></Card><div className="note"><LockKeyhole/>Location is monitored only during this Safety Journey.</div><button className="primary" onClick={()=>go('routes')}>Continue to route safety <ChevronRight/></button></div></>}
-function Routes({go}:any){return <><Header title="Choose your route" back={()=>go('start')}/><div className="content"><small className="eyebrow">SAFETY ANALYSIS COMPLETE</small><h1>Which way feels<br/><em>right for you?</em></h1><Map/><div className="note"><ShieldCheck/>SAKHI prioritizes safety, not just speed.</div>{[['Recommended route',92,'26 min','Well-lit · High activity · Lower incident density','safe'],['Fastest route',61,'22 min','Low activity · Poor lighting section','warn'],['Quiet streets',78,'31 min','Moderate lighting · Lower incident density','safe']].map((r:any,i)=><Card key={r[0]} className={i===0?'selected':''} onClick={()=>go('live')}><div className="route-top"><span><b>{r[0]}</b><strong>{r[2]}</strong></span><span className={r[4]}><b>{r[1]}</b><small>/100</small></span></div><p>{r[3]}</p><small><Hospital/> 3 emergency services <ChevronRight/></small></Card>)}</div></>}
-function Live({go,score,mode}:any){const critical=mode==='critical';return <><Header title="Safety Journey Active" back={()=>go('home')}/><div className="content"><div className="live-title"><span><small>Heading to</small><h1>Narengi</h1><small><Clock3/> Arriving in 18 min</small></span><Pill tone={critical?'warn':'safe'}>{critical?'Attention':'Protected'}</Pill></div><Map danger={critical}/><Card><div className="risk-top"><span><small className="eyebrow">CONTEXTUAL AI RISK ENGINE</small><h2>Current Safety Score</h2><small>This score represents current journey risk based on multiple signals.</small></span><Ring score={score} tone={critical?'warn':'safe'}/></div><div className="signals">{[[MapPin,'Location',critical?'Higher-risk area':'On planned route'],[Route,'Route behaviour',critical?'Deviation detected':'Following route'],[Activity,'Movement',critical?'Unexpected stop':'Moving normally'],[HeartPulse,'Health data','Not connected'],[BatteryMedium,'Device status','74% battery'],[Wifi,'Network','Strong']].map(([I,l,v]:any)=><div className="signal" key={l}><I/><span><small>{l}</small><b>{v}</b></span><CheckIcon/></div>)}</div></Card>{critical&&<button className="warning" onClick={()=>go('check')}><AlertTriangle/> Review potential anomaly <ChevronRight/></button>}<button className="emergency" onClick={()=>go('emergency')}><Siren/><b>EMERGENCY<small>Press and hold to activate emergency mode</small></b></button><button className="quiet">End Safety Journey</button></div></>}
-function Check({go,score,mode}:any){return <div className="focused"><div className="top"><div className="brand"><ShieldCheck/><b>SAKHI</b></div><button className="icon"><ArrowLeft/></button></div><div className="check"><AlertTriangle/><Pill tone="warn">Potential risk detected</Pill><h1>Are you<br/><em>okay?</em></h1><p>We noticed unusual activity during your journey.</p><Card><b>Detected signals</b><p>Route deviation · Unexpected stop · Higher-risk area{mode==='critical'?' · Unusual movement':''}</p><strong>Potential risk · {score}/100</strong></Card><button className="primary" onClick={()=>go('live')}><CheckIcon/>I&apos;m Safe</button><button className="secondary" onClick={()=>go('emergency')}><Siren/>I Need Help</button><button className="quiet" onClick={()=>go('emergency')}>Can&apos;t respond</button></div></div>}
-function Emergency({go,score}:any){return <div className="focused emergency-screen"><div className="top"><div className="brand"><ShieldCheck/><b>SAKHI</b></div><Pill tone="danger">Protocol active</Pill></div><div className="check"><Siren/><small className="eyebrow danger-text">EMERGENCY PROTOCOL ACTIVATED</small><Pill tone="danger">Risk Level: CRITICAL</Pill><h1>Help is<br/><em>on the way.</em></h1><p>Selected safety information has been prepared for your emergency contacts.</p><Card className="notified"><CheckIcon/><b>Emergency contacts notified<small>Ananya Rao · just now</small></b></Card><Card><small>CONTEXT AT DETECTION</small><div className="summary"><Ring score={score} tone="danger"/><b>Potential emergency<small>No response after safety check</small></b></div><p><MapPin/> Narengi · <Clock3/> Last safe 8:47 PM · <BatteryMedium/> 74%</p></Card><button className="primary" onClick={()=>go('contact')}><Phone/>Call emergency contact</button><button className="secondary" onClick={()=>window.open('tel:112')}><Siren/>Call 112</button><button className="quiet" onClick={()=>go('contact')}>View shared information</button></div></div>}
-function Contact({go,score}:any){return <div className="focused"><div className="top"><div className="brand"><ShieldCheck/><b>SAKHI</b></div><button className="icon" onClick={()=>go('emergency')}><ArrowLeft/></button></div><div className="check"><small className="eyebrow danger-text">SAKHI EMERGENCY ALERT</small><Pill tone="danger">Potential Emergency Detected</Pill><h1>Riya needs help</h1><p>An emergency protocol was activated during her Safety Journey.</p><Map danger/><Card><small>SHARED SAFETY INFORMATION</small><div className="summary"><Ring score={score} tone="danger"/><b>Potential emergency<small>No response after safety check</small></b></div><p><MapPin/> Narengi, Bengaluru</p><p><Clock3/> Last confirmed safe · 8:47 PM</p></Card><button className="primary"><Phone/>Call Riya</button><button className="secondary"><Navigation/>View live location</button></div></div>}
-function MapPage(){return <><Header title="Safety map"/><div className="content"><small className="eyebrow">COMMUNITY INTELLIGENCE</small><h1>Know your<br/><em>surroundings.</em></h1><Map danger/><Card><b>Nearby essentials</b><p><Hospital/> Hospitals · 4 nearby</p><p><Siren/> Police stations · 2 nearby</p><p><Navigation/> Transit stops · 8 nearby</p></Card><button className="primary">+ Report unsafe area</button></div></>}
-function Journeys(){return <><Header title="Journey history"/><div className="content"><small className="eyebrow">YOUR JOURNEYS</small><h1>Every arrival<br/><em>matters.</em></h1>{['Gauhati University → Narengi','Bandra West → Lower Parel','Hauz Khas → Saket'].map((x,i)=><Card className="row" key={x}><Route/><span><b>{x}</b><small>{i?'Yesterday':'Today'} · {i?34:28} min</small></span><strong>{[96,88,94][i]}<small>/100</small></strong></Card>)}<Card className="privacy"><LockKeyhole/><span><b>Safety Capsule</b><small>How your journey data stays private</small></span><ChevronRight/></Card></div></>}
-function Profile({go}:any){return <><Header title="Profile & privacy"/><div className="content"><div className="profile"><span className="avatar">RS</span><b>Riya Sharma<small>Privacy-first by default</small></b></div><Card className="privacy"><LockKeyhole/><span><b>Your privacy is protected</b><small>Only share what&apos;s needed, when it&apos;s needed.</small></span></Card><Card><b>Your Data</b><small>SAKHI only shares selected information when you allow it or when emergency escalation is triggered according to your settings.</small></Card><div className="field">SAFETY SETUP</div><Card>{[['Emergency contacts','2 contacts selected',Users],['Health data','Not connected',HeartPulse],['Location permissions','Only during active journeys',MapPin]].map(([a,b,I]:any)=><button className="setting" key={a} onClick={()=>a==='Health data'&&go('profile')}><I/><span><b>{a}</b><small>{b}</small></span><ChevronRight/></button>)}</Card><div className="field">PRIVACY CONTROLS</div><Card><button className="setting" onClick={()=>go('privacy')}><LockKeyhole/><span><b>Safety Capsule</b><small>Temporary encrypted information</small></span><ChevronRight/></button></Card></div></>}
-function Privacy(){return <><Header title="Safety Capsule"/><div className="content center"><LockKeyhole/><small className="eyebrow">PRIVATE BY DESIGN</small><h1>Protection when<br/><em>you need it.</em></h1><p>Privacy when you don&apos;t.</p><Card>{['Journey starts','Temporary encrypted safety information','Private by default','Emergency detected','Selected information shared','Journey completed'].map(x=><div className="step" key={x}><ShieldCheck/><b>{x}<small>Context is held securely, only for this journey.</small></b></div>)}</Card></div></>}
+
+import React, { useCallback, useEffect, useState } from 'react'
+import { Check as CheckIcon } from 'lucide-react'
+import { RiskMode, Screen } from '@/types'
+import { useGeolocation } from '@/hooks/useGeolocation'
+import { Nav } from '@/components/ui/Nav'
+import { RecipientLiveSessionModal } from '@/components/ui/RecipientLiveSessionModal'
+import { AnalyticsScreen } from '@/components/screens/AnalyticsScreen'
+import { AreaSafetyScreen } from '@/components/screens/AreaSafetyScreen'
+import { CheckScreen } from '@/components/screens/CheckScreen'
+import { ContactScreen } from '@/components/screens/ContactScreen'
+import { EmergencyScreen } from '@/components/screens/EmergencyScreen'
+import { HomeScreen } from '@/components/screens/HomeScreen'
+import { JourneysScreen } from '@/components/screens/JourneysScreen'
+import { LiveScreen } from '@/components/screens/LiveScreen'
+import { MapScreen } from '@/components/screens/MapScreen'
+import { PrivacyScreen } from '@/components/screens/PrivacyScreen'
+import { ProfileScreen } from '@/components/screens/ProfileScreen'
+import { RoutesScreen } from '@/components/screens/RoutesScreen'
+import { StartScreen } from '@/components/screens/StartScreen'
+
+const MAIN_TABS: Screen[] = ['home', 'journeys', 'analytics', 'map', 'profile']
+
+const FALLBACK_PARENTS: Record<Screen, Screen> = {
+  home: 'home',
+  start: 'home',
+  routes: 'start',
+  live: 'routes',
+  check: 'live',
+  emergency: 'live',
+  contact: 'emergency',
+  map: 'home',
+  journeys: 'home',
+  analytics: 'home',
+  areaSafety: 'home',
+  profile: 'home',
+  privacy: 'profile',
+}
+
+export default function Page() {
+  const [screen, setScreen] = useState<Screen>('home')
+  const [historyStack, setHistoryStack] = useState<Screen[]>(['home'])
+  const [score, setScore] = useState<number>(92)
+  const [mode, setMode] = useState<RiskMode>('normal')
+  const [toast, setToast] = useState<string>('')
+  const [locationSharingEnabled, setLocationSharingEnabled] = useState<boolean>(true)
+  const [recipientToken, setRecipientToken] = useState<string | null>(null)
+
+  const { location, status, error, isTracking, permissionState, startTracking, stopTracking } =
+    useGeolocation()
+
+  const note = (x: string) => {
+    setToast(x)
+    setTimeout(() => setToast(''), 2500)
+  }
+
+  // Detect #live-session token from URL
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash
+      if (hash.includes('token=')) {
+        const tokenVal = hash.split('token=')[1]
+        setRecipientToken(tokenVal)
+      }
+    }
+  }, [])
+
+  // Forward Navigation Function
+  const go = useCallback(
+    (targetScreen: Screen) => {
+      if (MAIN_TABS.includes(targetScreen)) {
+        setHistoryStack([targetScreen])
+      } else {
+        setHistoryStack((prev) => [...prev, targetScreen])
+      }
+
+      setScreen(targetScreen)
+
+      if (typeof window !== 'undefined') {
+        window.history.pushState({ screen: targetScreen }, '', `#${targetScreen}`)
+      }
+    },
+    []
+  )
+
+  // Back Navigation Function
+  const goBack = useCallback(() => {
+    setHistoryStack((prevStack) => {
+      if (prevStack.length > 1) {
+        const newStack = prevStack.slice(0, -1)
+        const prevScreen = newStack[newStack.length - 1]
+        setScreen(prevScreen)
+        return newStack
+      } else {
+        const fallback = FALLBACK_PARENTS[screen] || 'home'
+        setScreen(fallback)
+        return [fallback]
+      }
+    })
+  }, [screen])
+
+  // Sync Browser Back Button (popstate)
+  useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state && e.state.screen) {
+        setScreen(e.state.screen)
+      } else {
+        goBack()
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [goBack])
+
+  const toggleLocationSharing = () => {
+    if (locationSharingEnabled) {
+      setLocationSharingEnabled(false)
+      stopTracking()
+      note('Location sharing disabled (Privacy Protected)')
+    } else {
+      setLocationSharingEnabled(true)
+      startTracking()
+      note('Location sharing enabled')
+    }
+  }
+
+  const demo = (m: RiskMode) => {
+    setMode(m)
+    setScore(m === 'normal' ? 92 : m === 'suspicious' ? 67 : 91)
+    if (locationSharingEnabled) {
+      startTracking()
+    }
+    note('Demo scenario updated')
+  }
+
+  const renderPage = () => {
+    switch (screen) {
+      case 'home':
+        return (
+          <HomeScreen
+            go={go}
+            goBack={goBack}
+            demo={demo}
+            mode={mode}
+            locationSharingEnabled={locationSharingEnabled}
+            toggleLocationSharing={toggleLocationSharing}
+            location={location}
+            isTracking={isTracking}
+          />
+        )
+      case 'start':
+        return (
+          <StartScreen
+            go={go}
+            goBack={goBack}
+            startTracking={startTracking}
+            locationSharingEnabled={locationSharingEnabled}
+          />
+        )
+      case 'routes':
+        return (
+          <RoutesScreen
+            go={go}
+            goBack={goBack}
+            location={location}
+            status={status}
+            error={error}
+            isTracking={isTracking}
+            startTracking={startTracking}
+            locationSharingEnabled={locationSharingEnabled}
+          />
+        )
+      case 'live':
+        return (
+          <LiveScreen
+            go={go}
+            goBack={goBack}
+            score={score}
+            mode={mode}
+            location={location}
+            status={status}
+            error={error}
+            isTracking={isTracking}
+            startTracking={startTracking}
+            stopTracking={stopTracking}
+            locationSharingEnabled={locationSharingEnabled}
+          />
+        )
+      case 'check':
+        return <CheckScreen go={go} goBack={goBack} score={score} mode={mode} />
+      case 'emergency':
+        return <EmergencyScreen go={go} goBack={goBack} score={score} />
+      case 'contact':
+        return <ContactScreen go={go} goBack={goBack} score={score} location={location} />
+      case 'map':
+        return (
+          <MapScreen
+            go={go}
+            goBack={goBack}
+            location={location}
+            status={status}
+            error={error}
+            isTracking={isTracking}
+            startTracking={startTracking}
+            stopTracking={stopTracking}
+            locationSharingEnabled={locationSharingEnabled}
+            toggleLocationSharing={toggleLocationSharing}
+            permissionState={permissionState}
+          />
+        )
+      case 'journeys':
+        return <JourneysScreen go={go} goBack={goBack} />
+      case 'analytics':
+        return <AnalyticsScreen go={go} goBack={goBack} />
+      case 'areaSafety':
+        return (
+          <AreaSafetyScreen
+            go={go}
+            goBack={goBack}
+            mode={mode}
+            location={location}
+            status={status}
+            isTracking={isTracking}
+            locationSharingEnabled={locationSharingEnabled}
+          />
+        )
+      case 'profile':
+        return (
+          <ProfileScreen
+            go={go}
+            goBack={goBack}
+            locationSharingEnabled={locationSharingEnabled}
+            toggleLocationSharing={toggleLocationSharing}
+          />
+        )
+      case 'privacy':
+        return <PrivacyScreen go={go} goBack={goBack} />
+      default:
+        return (
+          <HomeScreen
+            go={go}
+            goBack={goBack}
+            demo={demo}
+            mode={mode}
+            locationSharingEnabled={locationSharingEnabled}
+            toggleLocationSharing={toggleLocationSharing}
+            location={location}
+            isTracking={isTracking}
+          />
+        )
+    }
+  }
+
+  const showNav = MAIN_TABS.includes(screen)
+
+  return (
+    <main className="shell">
+      {renderPage()}
+      {showNav && <Nav go={go} screen={screen} />}
+      {toast && (
+        <div className="toast">
+          <CheckIcon />
+          {toast}
+        </div>
+      )}
+      <RecipientLiveSessionModal
+        token={recipientToken}
+        onClose={() => setRecipientToken(null)}
+      />
+    </main>
+  )
+}
