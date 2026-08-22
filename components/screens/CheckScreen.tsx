@@ -1,5 +1,6 @@
 import React from 'react'
-import { AlertTriangle, ArrowLeft, Check as CheckIcon, ShieldCheck, Siren } from 'lucide-react'
+import Image from 'next/image'
+import { AlertTriangle, ArrowLeft, Check as CheckIcon, Siren } from 'lucide-react'
 import { CheckProps } from '@/types'
 import { Card } from '@/components/ui/Card'
 import { Pill } from '@/components/ui/Pill'
@@ -8,7 +9,7 @@ export const CheckScreen: React.FC<CheckProps> = ({ go, goBack, score, mode }) =
   <div className="focused">
     <div className="top">
       <div className="brand">
-        <ShieldCheck />
+        <Image src="/sakhi-logo.png" alt="SAKHI" width={64} height={40} className="h-10 w-16 object-contain" />
         <b>SAKHI</b>
       </div>
       <button className="icon" onClick={goBack} aria-label="Go back">

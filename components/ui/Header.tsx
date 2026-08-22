@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ArrowLeft, Bell, LockKeyhole, ShieldCheck, User, Volume2 } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowLeft, Bell, LockKeyhole, User, Volume2 } from 'lucide-react'
 import { HeaderProps } from '@/types'
 
 export const Header: React.FC<HeaderProps> = ({ title, back }) => {
@@ -16,7 +17,7 @@ export const Header: React.FC<HeaderProps> = ({ title, back }) => {
         </button>
       ) : (
         <div className="brand cursor-pointer">
-          <ShieldCheck />
+          <Image src="/sakhi-logo.png" alt="SAKHI" width={64} height={40} className="h-10 w-16 object-contain" />
           <b>
             SAKHI<small>SAFETY COMPANION</small>
           </b>

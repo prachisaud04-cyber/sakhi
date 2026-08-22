@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import {
   Clock,
@@ -9,7 +10,6 @@ import {
   Navigation,
   RefreshCw,
   ShieldAlert,
-  ShieldCheck,
   X,
 } from 'lucide-react'
 import { LiveSharingSession } from '@/hooks/useLiveLocationSession'
@@ -93,7 +93,7 @@ export const RecipientLiveSessionModal: React.FC<RecipientLiveSessionModalProps>
 
         {/* Header Branding */}
         <div className="flex items-center gap-2 mb-3">
-          <ShieldCheck className="w-6 h-6 text-[#00d9d9]" />
+          <Image src="/sakhi-logo.png" alt="SAKHI" width={64} height={40} className="h-10 w-16 object-contain" />
           <b className="text-xl font-extrabold text-white tracking-wide">SAKHI Live Location</b>
         </div>
 
