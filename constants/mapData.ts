@@ -2,7 +2,7 @@ export type POIType = 'police' | 'hospital' | 'women_safety' | 'transit_shelter'
 
 export const GOOGLE_MAPS_API_KEY: string =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ||
-  'AIzaSyBxoCqtT1c_4synLq_U_YeIO3EKE68SWj4'
+  'AIzaSyB8bVhlLGRGBmqjPz8F1ASQsWdNM8JyZyU'
 
 export interface SafetyPOI {
   id: string
