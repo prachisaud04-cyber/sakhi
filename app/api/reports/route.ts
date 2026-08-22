@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseServerClient, isSupabaseServerConfigured } from '@/lib/supabaseServer'
 
+export const dynamic = 'force-dynamic'
+
 interface SafetyReportItem {
   id: string
   userName: string
