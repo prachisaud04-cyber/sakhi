@@ -1,5 +1,6 @@
 import React from 'react'
-import { ArrowLeft, Clock3, MapPin, Navigation, Phone, ShieldCheck } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowLeft, Clock3, MapPin, Navigation, Phone } from 'lucide-react'
 import { ContactProps } from '@/types'
 import { Card } from '@/components/ui/Card'
 import { Map } from '@/components/ui/Map'
@@ -10,7 +11,7 @@ export const ContactScreen: React.FC<ContactProps> = ({ goBack, score, location 
   <div className="focused">
     <div className="top">
       <div className="brand">
-        <ShieldCheck />
+        <Image src="/sakhi-logo.png" alt="SAKHI" width={64} height={40} className="h-10 w-16 object-contain" />
         <b>SAKHI</b>
       </div>
       <button className="icon" onClick={goBack} aria-label="Go back">

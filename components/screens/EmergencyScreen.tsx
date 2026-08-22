@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import {
   ArrowLeft,
   BatteryMedium,
@@ -9,7 +10,6 @@ import {
   MapPin,
   Navigation,
   Phone,
-  ShieldCheck,
   Siren,
 } from 'lucide-react'
 import { EmergencyProps } from '@/types'
@@ -34,7 +34,7 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({ go, goBack, score })
     <div className="focused emergency-screen">
       <div className="top">
         <div className="brand">
-          <ShieldCheck />
+          <Image src="/sakhi-logo.png" alt="SAKHI" width={64} height={40} className="h-10 w-16 object-contain" />
           <b>SAKHI</b>
         </div>
         <div className="flex items-center gap-2">
