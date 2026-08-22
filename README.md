@@ -6,7 +6,7 @@
 
 **Privacy-first protection for every journey.**
 
-**Team NEXORA · TigmaMinds Academy Hackathon 2026**
+**Team NEXORA**
 
 </div>
 
