@@ -11,7 +11,9 @@ import {
   LockKeyhole,
   MapPin,
   Mic,
+  Moon,
   Navigation,
+  Palette,
   Phone,
   PhoneCall,
   RefreshCw,
@@ -20,6 +22,7 @@ import {
   ShieldCheck,
   Siren,
   Sparkles,
+  Sun,
   Wifi,
 } from 'lucide-react'
 import { HomeProps, RiskMode } from '@/types'
@@ -28,6 +31,7 @@ import {
   initiateCellularCall,
 } from '@/constants/contacts'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import { useCriticalBatteryAutoAlert } from '@/hooks/useCriticalBatteryAutoAlert'
 import { useDeviceTelemetry } from '@/hooks/useDeviceTelemetry'
 import { useLiveLocationSession } from '@/hooks/useLiveLocationSession'
@@ -55,6 +59,7 @@ export const HomeScreen: React.FC<HomeProps> = ({
   isTracking,
 }) => {
   const { user, contacts } = useAuth()
+  const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme()
   const [isEmergencyCallingOpen, setIsEmergencyCallingOpen] = useState<boolean>(false)
   const [isAudioRecorderOpen, setIsAudioRecorderOpen] = useState<boolean>(false)
   const [isQuickToolsOpen, setIsQuickToolsOpen] = useState<boolean>(false)
@@ -135,8 +140,48 @@ export const HomeScreen: React.FC<HomeProps> = ({
     >
       <Header />
       <div className="content">
+        {/* Quick Accessible Theme Switch Bar on Dashboard */}
+        <div className="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/10 dark:bg-[#0c1728]/80 dark:border-cyan-500/30 shadow-lg">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#00d9d9]/15 border border-[#00d9d9]/30 flex items-center justify-center text-[#00d9d9]">
+              <Palette className="w-4 h-4" />
+            </div>
+            <div>
+              <b className="text-xs text-white block">Theme Mode</b>
+              <small className="text-[11px] text-[#94a3b8] font-mono">
+                Active: <span className="text-[#00d9d9] font-bold">{resolvedTheme === 'dark' ? 'Dark Cyber' : 'Light Mode'}</span>
+              </small>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1.5 bg-black/30 p-1 rounded-xl border border-white/5 font-mono text-xs">
+            <button
+              type="button"
+              onClick={() => setTheme('dark')}
+              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                resolvedTheme === 'dark'
+                  ? 'bg-[#00d9d9] text-[#050914] shadow-md shadow-cyan-500/20'
+                  : 'text-[#94a3b8] hover:text-white'
+              }`}
+            >
+              <Moon className="w-3.5 h-3.5" /> Dark
+            </button>
+            <button
+              type="button"
+              onClick={() => setTheme('light')}
+              className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                resolvedTheme === 'light'
+                  ? 'bg-[#00d9d9] text-[#050914] shadow-md shadow-cyan-500/20'
+                  : 'text-[#94a3b8] hover:text-white'
+              }`}
+            >
+              <Sun className="w-3.5 h-3.5" /> Light
+            </button>
+          </div>
+        </div>
+
         {/* Minimal, Spacious Hero Section with Cybernetic Artwork */}
-        <div className="hero flex flex-col lg:flex-row items-center justify-between gap-8 py-4">
+        <div className="hero flex flex-col lg:flex-row items-center justify-between gap-8 py-2">
           <div className="flex-1">
             <small className="eyebrow flex items-center gap-1.5 mb-2">
               <span className="w-2 h-2 rounded-full bg-[#00d9d9] animate-ping" />

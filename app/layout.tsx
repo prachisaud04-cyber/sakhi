@@ -36,8 +36,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`dark ${plusJakarta.variable}`}>
-      <body className="antialiased font-sans bg-[#050914] text-[#f8fafc]">
+    <html lang="en" className={plusJakarta.variable}>
+      <body className="antialiased font-sans">
         <ThemeProvider>
           <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>

@@ -802,3 +802,52 @@ html.light .toast {
   box-shadow: 0 12px 30px rgba(15, 23, 42, 0.1);
 }
 
+/* Deep Light Mode Overrides for Hardcoded Dark UI Utilities */
+html.light .hero,
+html.light .content {
+  color: #0f172a;
+}
+
+html.light [class*="bg-[#081120]"],
+html.light [class*="bg-[#090d1a]"],
+html.light [class*="bg-[#0c1728]"],
+html.light [class*="bg-[#0f172a]"],
+html.light [class*="bg-[#101c30]"],
+html.light [class*="bg-[#1e293b]"] {
+  background-color: #ffffff !important;
+  color: #0f172a;
+}
+
+html.light [class*="bg-black/"],
+html.light [class*="bg-white/5"] {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+
+html.light [class*="border-white/5"],
+html.light [class*="border-white/10"],
+html.light [class*="border-white/20"] {
+  border-color: rgba(15, 23, 42, 0.08) !important;
+}
+
+html.light [class*="text-white"] {
+  color: #0f172a !important;
+}
+
+html.light [class*="text-[#cbd5e1]"],
+html.light [class*="text-[#94a3b8]"] {
+  color: #475569 !important;
+}
+
+html.light input,
+html.light select,
+html.light textarea {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light input::placeholder {
+  color: #94a3b8 !important;
+}
+
+
