@@ -650,3 +650,155 @@ nav button.active svg {
     grid-column: 1 / -1;
   }
 }
+
+/* ==========================================================================
+   LIGHT MODE STYLING SYSTEM
+   ========================================================================== */
+html.light,
+body.light {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+html.light .shell {
+  background:
+    radial-gradient(circle at 15% 0%, rgba(14, 165, 233, 0.09) 0%, transparent 40%),
+    radial-gradient(circle at 85% 100%, rgba(99, 102, 241, 0.07) 0%, transparent 45%),
+    #f8fafc;
+  color: #0f172a;
+}
+
+html.light header {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+html.light header h2 {
+  color: #0f172a;
+}
+
+html.light .brand b {
+  color: #0f172a;
+}
+
+html.light .brand small {
+  color: #64748b;
+}
+
+html.light .icon {
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  color: #475569;
+}
+
+html.light .icon:hover {
+  background: rgba(15, 23, 42, 0.08);
+  border-color: rgba(15, 23, 42, 0.2);
+  color: #0f172a;
+}
+
+html.light .hero h1,
+html.light .intro h1,
+html.light .content > h1,
+html.light .check h1 {
+  color: #0f172a;
+}
+
+html.light .hero p,
+html.light .intro p,
+html.light .check > p {
+  color: #475569;
+}
+
+html.light .card {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+html.light .card b,
+html.light .row b,
+html.light .setting b,
+html.light .privacy b,
+html.light .notified b,
+html.light .summary b {
+  color: #0f172a;
+}
+
+html.light .card small,
+html.light .row small,
+html.light .setting small,
+html.light .privacy small,
+html.light .notified small,
+html.light .summary small {
+  color: #64748b;
+}
+
+html.light .clickable:hover {
+  background: #ffffff;
+  border-color: rgba(14, 165, 233, 0.5);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
+}
+
+html.light .selected {
+  background: #ffffff !important;
+  border-color: #0ea5e9 !important;
+  box-shadow: 0 12px 28px rgba(14, 165, 233, 0.15) !important;
+}
+
+html.light .secondary {
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+}
+
+html.light .secondary:hover {
+  background: rgba(15, 23, 42, 0.08);
+  border-color: rgba(15, 23, 42, 0.2);
+}
+
+html.light .quiet {
+  color: #64748b;
+}
+
+html.light .quiet:hover {
+  color: #0f172a;
+}
+
+html.light nav {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+}
+
+html.light nav button {
+  color: #64748b;
+}
+
+html.light nav button:hover {
+  color: #0f172a;
+  background: rgba(15, 23, 42, 0.05);
+}
+
+html.light nav button.active {
+  color: #0f172a;
+}
+
+html.light nav button.active svg {
+  color: #0284c7;
+}
+
+html.light .field {
+  color: #64748b;
+}
+
+html.light .section b {
+  color: #0f172a;
+}
+
+html.light .toast {
+  background: rgba(255, 255, 255, 0.98);
+  border-color: rgba(14, 165, 233, 0.4);
+  color: #0f172a;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.1);
+}
+

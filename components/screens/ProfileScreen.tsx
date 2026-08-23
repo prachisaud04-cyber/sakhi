@@ -8,16 +8,20 @@ import {
   ChevronRight,
   Edit2,
   HeartPulse,
+  Laptop,
   LockKeyhole,
   LogOut,
   LucideIcon,
   MapPin,
+  Moon,
   Navigation,
+  Palette,
   Phone,
   Plus,
   Shield,
   ShieldCheck,
   Sparkles,
+  Sun,
   Trash2,
   User,
   UserCheck,
@@ -27,6 +31,7 @@ import {
 import { ProfileProps } from '@/types'
 import { EmergencyContact, initiateCellularCall } from '@/constants/contacts'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTheme } from '@/contexts/ThemeContext'
 import { DesktopCallFallbackModal } from '@/components/ui/DesktopCallFallbackModal'
 import { NotificationCenterModal } from '@/components/ui/NotificationCenterModal'
 import { Card } from '@/components/ui/Card'
@@ -46,6 +51,7 @@ export const ProfileScreen: React.FC<ProfileProps> = ({
   toggleLocationSharing,
 }) => {
   const { user, contacts, logout, openEmergencySetupModal } = useAuth()
+  const { theme, setTheme } = useTheme()
 
   const [isViewingNotifications, setIsViewingNotifications] = useState<boolean>(false)
   const [fallbackContact, setFallbackContact] = useState<EmergencyContact | null>(null)
@@ -209,6 +215,57 @@ export const ProfileScreen: React.FC<ProfileProps> = ({
                 />
               </button>
             </div>
+          </div>
+        </Card>
+
+        <div className="field">APPEARANCE &amp; THEME</div>
+        <Card noTilt className="p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Palette className="w-4 h-4 text-[#00d9d9]" />
+              <b className="text-sm text-white">Visual Interface Theme</b>
+            </div>
+            <span className="text-[10px] text-[#00d9d9] font-mono uppercase bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
+              {theme === 'system' ? 'System Match' : theme === 'dark' ? 'Dark Cyber' : 'Light Mode'}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              onClick={() => setTheme('dark')}
+              className={`p-3 rounded-xl border flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
+                theme === 'dark'
+                  ? 'bg-[#00d9d9]/20 border-[#00d9d9] text-[#00d9d9] shadow-md shadow-cyan-500/10'
+                  : 'bg-black/30 border-white/10 text-[#94a3b8] hover:text-white'
+              }`}
+            >
+              <Moon className="w-5 h-5" />
+              <span className="text-xs font-bold font-mono">Dark Cyber</span>
+            </button>
+
+            <button
+              onClick={() => setTheme('light')}
+              className={`p-3 rounded-xl border flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
+                theme === 'light'
+                  ? 'bg-[#00d9d9]/20 border-[#00d9d9] text-[#00d9d9] shadow-md shadow-cyan-500/10'
+                  : 'bg-black/30 border-white/10 text-[#94a3b8] hover:text-white'
+              }`}
+            >
+              <Sun className="w-5 h-5" />
+              <span className="text-xs font-bold font-mono">Light Mode</span>
+            </button>
+
+            <button
+              onClick={() => setTheme('system')}
+              className={`p-3 rounded-xl border flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
+                theme === 'system'
+                  ? 'bg-[#00d9d9]/20 border-[#00d9d9] text-[#00d9d9] shadow-md shadow-cyan-500/10'
+                  : 'bg-black/30 border-white/10 text-[#94a3b8] hover:text-white'
+              }`}
+            >
+              <Laptop className="w-5 h-5" />
+              <span className="text-xs font-bold font-mono">Auto System</span>
+            </button>
           </div>
         </Card>
 
