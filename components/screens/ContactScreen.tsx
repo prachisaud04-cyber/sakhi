@@ -53,7 +53,7 @@ export const ContactScreen: React.FC<ContactProps> = ({ goBack, score, location 
     }
   }, [])
 
-  const userName = user?.name || 'Riya Sharma'
+  const userName = user?.name || 'Prachi Saud'
   const userPhone = user?.phone || '+91 88227 17429'
   const userPhoneClean = (user?.normalizedPhone || '+918822717429').replace('+', '')
 

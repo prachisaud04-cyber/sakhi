@@ -145,7 +145,7 @@ export const HomeScreen: React.FC<HomeProps> = ({
             <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-tight">
               Welcome,
               <br />
-              <em className="text-[#00d9d9] not-italic">{user?.name || 'Riya'}.</em>
+              <em className="text-[#00d9d9] not-italic">{user?.name || 'Prachi Saud'}.</em>
             </h1>
             <p className="text-sm md:text-base text-[#94a3b8] mt-2 max-w-md">
               Your intelligent safety companion for every journey ahead.

@@ -26,8 +26,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 const DEMO_USER: StoredUserAccount = {
-  id: 'usr-demo-riya',
-  name: 'Riya Sharma',
+  id: 'usr-demo-prachi',
+  name: 'Prachi Saud',
   phone: '+91 88227 17429',
   normalizedPhone: '+918822717429',
   age: 21,
@@ -62,7 +62,7 @@ function getAvatarInitials(name: string): string {
   if (parts.length >= 2) {
     return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
   }
-  return name.slice(0, 2).toUpperCase() || 'EM'
+  return name.slice(0, 2).toUpperCase() || 'PS'
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -80,6 +80,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const storedUser = localStorage.getItem('sakhi_auth_user')
       if (storedUser) {
         const parsedUser: UserProfile = JSON.parse(storedUser)
+        // Auto-upgrade legacy Riya demo name if present
+        if (parsedUser.name === 'Riya Sharma' || parsedUser.name === 'Riya') {
+          parsedUser.name = 'Prachi Saud'
+          localStorage.setItem('sakhi_auth_user', JSON.stringify(parsedUser))
+        }
         setUser(parsedUser)
 
         // Load user-specific emergency contacts

@@ -179,7 +179,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, go }) => {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Riya Sharma"
+                  placeholder="e.g. Prachi Saud"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full bg-[#0f172a] border border-white/10 focus:border-[#00d9d9] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-[#475569] outline-none transition-colors"
@@ -277,7 +277,7 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onSuccess, go }) => {
             onClick={handleQuickDemo}
             className="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-[#00d9d9] flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
-            <Zap className="w-3.5 h-3.5 text-amber-400" /> 1-Tap Quick Demo (Riya Sharma)
+            <Zap className="w-3.5 h-3.5 text-amber-400" /> 1-Tap Quick Demo (Prachi Saud)
           </button>
         </div>
       </motion.div>

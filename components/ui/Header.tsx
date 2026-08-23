@@ -19,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({ title, back }) => {
         .join('')
         .toUpperCase()
         .slice(0, 2)
-    : 'RS'
+    : 'PS'
 
   return (
     <>
@@ -73,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({ title, back }) => {
             {showProfileMenu && (
               <div className="absolute right-0 mt-2 w-52 bg-[#0c1728] border border-cyan-500/30 rounded-xl shadow-2xl p-2 z-50 text-xs font-sans">
                 <div className="p-2 border-b border-white/10 mb-1">
-                  <b className="text-white block font-bold truncate">{user?.name || 'Riya Sharma'}</b>
+                  <b className="text-white block font-bold truncate">{user?.name || 'Prachi Saud'}</b>
                   <small className="text-[#00d9d9] font-mono block truncate">
                     {user?.phone || '+91 88227 17429'}
                   </small>

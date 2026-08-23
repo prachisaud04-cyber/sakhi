@@ -98,7 +98,7 @@ export const ProfileScreen: React.FC<ProfileProps> = ({
         .join('')
         .toUpperCase()
         .slice(0, 2)
-    : 'RS'
+    : 'PS'
 
   return (
     <motion.div
@@ -118,7 +118,7 @@ export const ProfileScreen: React.FC<ProfileProps> = ({
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <b className="text-xl font-extrabold text-white truncate">{user?.name || 'Riya Sharma'}</b>
+                <b className="text-xl font-extrabold text-white truncate">{user?.name || 'Prachi Saud'}</b>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-mono border border-emerald-500/30 flex items-center gap-1">
                   <UserCheck className="w-3 h-3" /> Verified
                 </span>

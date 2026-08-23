@@ -55,7 +55,7 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
 
   const telemetry = useDeviceTelemetry()
 
-  const userName = user?.name || 'Riya Sharma'
+  const userName = user?.name || 'Prachi Saud'
   const userPhone = user?.phone || '+91 88227 17429'
 
   const {
