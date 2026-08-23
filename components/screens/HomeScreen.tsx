@@ -143,9 +143,9 @@ export const HomeScreen: React.FC<HomeProps> = ({
               PRIVACY-FIRST PROTECTION
             </small>
             <h1 className="text-4xl md:text-5xl font-extrabold text-white leading-tight">
-              Welcome to
+              Welcome,
               <br />
-              <em className="text-[#00d9d9] not-italic">SAKHI.</em>
+              <em className="text-[#00d9d9] not-italic">{user?.name || 'Riya'}.</em>
             </h1>
             <p className="text-sm md:text-base text-[#94a3b8] mt-2 max-w-md">
               Your intelligent safety companion for every journey ahead.
@@ -170,7 +170,7 @@ export const HomeScreen: React.FC<HomeProps> = ({
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#22c55e] flex-shrink-0" />
-                <span>4 Emergency contacts ready</span>
+                <span>{contacts.length} Emergency contacts ready</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#22c55e] flex-shrink-0" />
