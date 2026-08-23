@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import {
   Activity,
+  BarChart2,
   BatteryMedium,
   CheckCircle2,
   ChevronRight,
@@ -23,6 +24,7 @@ import {
   Siren,
   Sparkles,
   Sun,
+  TrendingUp,
   Wifi,
 } from 'lucide-react'
 import { HomeProps, RiskMode } from '@/types'
@@ -439,6 +441,70 @@ export const HomeScreen: React.FC<HomeProps> = ({
               >
                 ⚡ Test 0% Battery Guard
               </button>
+            </div>
+          </Card>
+
+          {/* Safety Score Trend & Analytics Widget */}
+          <Card
+            noTilt
+            className="grid-full p-5 border-cyan-500/30 bg-[#0c1728]/95 light:bg-white cursor-pointer hover:border-cyan-400 transition-all shadow-md group"
+            onClick={() => go('analytics')}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2.5 rounded-xl bg-cyan-500/15 light:bg-sky-100 text-[#00d9d9] light:text-[#0284c7]">
+                  <TrendingUp className="w-5 h-5" />
+                </div>
+                <div>
+                  <b className="text-sm sm:text-base font-extrabold text-white light:text-slate-900 group-hover:text-[#00d9d9] light:group-hover:text-[#0284c7] transition-colors flex items-center gap-2">
+                    Safety Score Trend &amp; Route Telemetry
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-[#22c55e] border border-emerald-500/30 font-mono">
+                      LIVE RADAR
+                    </span>
+                  </b>
+                  <small className="text-xs text-[#94a3b8] light:text-slate-600 block">7-Day Transit corridor evaluation &amp; vitals analysis</small>
+                </div>
+              </div>
+              <div className="flex items-baseline gap-1.5 self-start sm:self-auto font-mono">
+                <span className="text-2xl font-extrabold text-[#00d9d9] light:text-[#0284c7]">96%</span>
+                <span className="text-xs text-emerald-400 light:text-emerald-700 font-bold">Optimal Safe</span>
+              </div>
+            </div>
+
+            {/* Sparkline Graph */}
+            <div className="py-2">
+              <svg viewBox="0 0 400 60" className="w-full h-14 overflow-visible">
+                <defs>
+                  <linearGradient id="dashboardAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#00d9d9" stopOpacity="0.4" />
+                    <stop offset="100%" stopColor="#00d9d9" stopOpacity="0.0" />
+                  </linearGradient>
+                  <linearGradient id="dashboardLineGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#3b82f6" />
+                    <stop offset="50%" stopColor="#00d9d9" />
+                    <stop offset="100%" stopColor="#22c55e" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M 10 40 C 60 48, 100 20, 150 16 C 200 12, 240 38, 290 30 C 330 22, 360 12, 390 8 L 390 58 L 10 58 Z"
+                  fill="url(#dashboardAreaGrad)"
+                />
+                <path
+                  d="M 10 40 C 60 48, 100 20, 150 16 C 200 12, 240 38, 290 30 C 330 22, 360 12, 390 8"
+                  fill="none"
+                  stroke="url(#dashboardLineGrad)"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+                <circle cx="390" cy="8" r="4" fill="#00d9d9" className="light:fill-[#0284c7]" />
+              </svg>
+            </div>
+
+            <div className="flex items-center justify-between pt-2 border-t border-white/5 light:border-slate-200 text-xs font-mono text-[#94a3b8] light:text-slate-600">
+              <span>Mon: 96% → Wed: 98% → Today: 96%</span>
+              <span className="text-[#00d9d9] light:text-[#0284c7] font-bold flex items-center gap-1 group-hover:underline">
+                Explore Full Interactive Analytics <ChevronRight className="w-3.5 h-3.5" />
+              </span>
             </div>
           </Card>
 

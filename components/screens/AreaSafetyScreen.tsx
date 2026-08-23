@@ -6,6 +6,7 @@ import {
   Activity,
   AlertTriangle,
   BarChart2,
+  Calendar,
   CheckCircle2,
   ChevronRight,
   Clock,
@@ -16,6 +17,7 @@ import {
   Shield,
   ShieldAlert,
   ShieldCheck,
+  TrendingUp,
   Users,
 } from 'lucide-react'
 import { AreaSafetyProps, RiskMode } from '@/types'
@@ -32,32 +34,33 @@ export const AreaSafetyScreen: React.FC<AreaSafetyProps> = ({
   locationSharingEnabled,
 }) => {
   const [displayScore, setDisplayScore] = useState<number>(92)
+  const [hoveredPoint, setHoveredPoint] = useState<number | null>(null)
 
   const getScoreMeta = (m: RiskMode) => {
     switch (m) {
       case 'normal':
         return {
           targetScore: 92,
-          riskText: 'LOW RISK',
+          riskText: 'LOW RISK (OPTIMAL)',
           riskLevel: 'Low',
-          color: '#19d3c5',
-          badgeClass: 'bg-emerald-500/15 border-emerald-500/30 text-[#22c55e]',
+          color: '#00d9d9',
+          badgeClass: 'bg-emerald-500/15 light:bg-emerald-100 border-emerald-500/30 light:border-emerald-300 text-[#22c55e] light:text-emerald-800 font-bold',
         }
       case 'suspicious':
         return {
           targetScore: 61,
-          riskText: 'MODERATE RISK',
+          riskText: 'MODERATE RISK (CAUTION)',
           riskLevel: 'Moderate',
           color: '#f59e0b',
-          badgeClass: 'bg-amber-500/15 border-amber-500/30 text-[#f59e0b]',
+          badgeClass: 'bg-amber-500/15 light:bg-amber-100 border-amber-500/30 light:border-amber-300 text-[#f59e0b] light:text-amber-800 font-bold',
         }
       case 'critical':
         return {
           targetScore: 24,
-          riskText: 'HIGH RISK',
+          riskText: 'HIGH RISK (DISTRESS ALERT)',
           riskLevel: 'High',
           color: '#ef4444',
-          badgeClass: 'bg-red-500/15 border-red-500/30 text-[#ef4444]',
+          badgeClass: 'bg-red-500/15 light:bg-red-100 border-red-500/30 light:border-red-300 text-[#ef4444] light:text-red-800 font-bold',
         }
     }
   }
@@ -88,13 +91,42 @@ export const AreaSafetyScreen: React.FC<AreaSafetyProps> = ({
   const strokeDasharray = 440
   const strokeDashoffset = strokeDasharray - (strokeDasharray * displayScore) / 100
 
-  // 24-hour trend data for demo chart
+  // 24-hour trend data for area score graph
   const trendPoints = [
-    { time: '8 AM', score: 95 },
-    { time: '12 PM', score: 94 },
-    { time: '4 PM', score: mode === 'critical' ? 35 : mode === 'suspicious' ? 68 : 96 },
-    { time: '8 PM', score: displayScore },
+    { time: '6 AM', label: 'Morning Corridor', score: 98, lighting: '100% Daylight' },
+    { time: '10 AM', label: 'Transit Peak', score: 95, lighting: '98% High Footfall' },
+    { time: '2 PM', label: 'Afternoon Route', score: 96, lighting: '96% Normal Flow' },
+    { time: '6 PM', label: 'Evening Commute', score: mode === 'critical' ? 45 : mode === 'suspicious' ? 68 : 94, lighting: '95% Street Lighting' },
+    { time: '9 PM', label: 'Night Highway', score: mode === 'critical' ? 28 : mode === 'suspicious' ? 62 : 91, lighting: '92% Patrol Active' },
+    { time: 'NOW', label: 'Live Location Check', score: displayScore, lighting: 'AI Monitored' },
   ]
+
+  // Graph dimensions
+  const svgWidth = 500
+  const svgHeight = 160
+  const padX = 35
+  const padY = 25
+  const minVal = 20
+  const maxVal = 100
+
+  const graphPoints = trendPoints.map((pt, i) => {
+    const x = padX + (i / (trendPoints.length - 1)) * (svgWidth - padX * 2)
+    const normY = (pt.score - minVal) / (maxVal - minVal)
+    const y = svgHeight - padY - normY * (svgHeight - padY * 2)
+    return { x, y, pt, i }
+  })
+
+  const pathD = graphPoints.reduce((acc, p, i, arr) => {
+    if (i === 0) return `M ${p.x} ${p.y}`
+    const prev = arr[i - 1]
+    const cx = (prev.x + p.x) / 2
+    return `${acc} C ${cx} ${prev.y}, ${cx} ${p.y}, ${p.x} ${p.y}`
+  }, '')
+
+  const areaD = `${pathD} L ${graphPoints[graphPoints.length - 1].x} ${svgHeight - padY} L ${graphPoints[0].x} ${svgHeight - padY} Z`
+
+  const activePoint =
+    hoveredPoint !== null ? trendPoints[hoveredPoint] : trendPoints[trendPoints.length - 1]
 
   return (
     <motion.div
@@ -102,27 +134,33 @@ export const AreaSafetyScreen: React.FC<AreaSafetyProps> = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.25 }}
+      className="pb-24"
     >
-      <Header title="AREA SAFETY" back={goBack} />
+      <Header title="Area Safety & Telemetry" back={goBack} />
       <div className="content">
         <div className="flex flex-col gap-1">
-          <small className="eyebrow flex items-center gap-2">
-            <span className="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-[9px] text-[#94a3b8] font-mono">
-              DEMO SCORE
+          <small className="eyebrow flex items-center gap-2 font-bold">
+            <span className="px-2 py-0.5 rounded bg-black/40 light:bg-slate-100 border border-white/10 light:border-slate-200 text-[10px] text-[#00d9d9] light:text-[#0284c7] font-mono">
+              LIVE RADAR
             </span>
-            SAFETY OVERVIEW FOR YOUR CURRENT AREA
+            AREA SAFETY OVERVIEW
           </small>
-          <h1 className="text-3xl font-extrabold text-white">Current area telemetry</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white light:text-slate-900 tracking-tight">
+            Current Area Telemetry
+          </h1>
+          <p className="text-sm text-[#94a3b8] light:text-slate-700 font-medium">
+            Autonomous threat detection based on GPS coordinates, police stations, lighting density, and historical safety index.
+          </p>
         </div>
 
-        {/* Hero Score + Summary Grid (Desktop 2-Column, Mobile Stack) */}
+        {/* Hero Score + Summary Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Left Column: Hero Circular Safety Score Visualization */}
-          <Card noTilt className="p-6 flex flex-col items-center justify-center text-center relative overflow-hidden bg-[#0f172a]/90">
+          <Card noTilt className="p-6 flex flex-col items-center justify-center text-center relative overflow-hidden bg-[#0c1728]/95 light:bg-white border-cyan-500/30 light:border-slate-200 shadow-xl">
             <div className="relative w-48 h-48 flex items-center justify-center my-2">
               {/* Circular SVG Progress Ring */}
               <svg className="absolute inset-0 w-full h-full transform -rotate-90 pointer-events-none" viewBox="0 0 160 160">
-                <circle cx="80" cy="80" r="70" stroke="rgba(255, 255, 255, 0.08)" strokeWidth="8" fill="none" />
+                <circle cx="80" cy="80" r="70" stroke="currentColor" className="text-white/10 light:text-slate-200" strokeWidth="8" fill="none" />
                 <motion.circle
                   cx="80"
                   cy="80"
@@ -137,148 +175,195 @@ export const AreaSafetyScreen: React.FC<AreaSafetyProps> = ({
                 />
               </svg>
               <div className="flex flex-col items-center">
-                <span className="text-5xl font-extrabold text-white font-mono tracking-tight">
+                <span className="text-5xl font-extrabold text-white light:text-slate-900 font-mono tracking-tight">
                   {displayScore}%
                 </span>
-                <span className="text-xs font-black tracking-widest text-[#cbd5e1] uppercase mt-1">
+                <span className="text-xs font-black tracking-widest text-[#94a3b8] light:text-slate-600 uppercase mt-1">
                   AREA SAFETY
                 </span>
               </div>
             </div>
 
-            <span className={`text-xs font-extrabold px-3 py-1 rounded-full border uppercase tracking-wider mt-2 ${badgeClass}`}>
+            <span className={`text-xs font-extrabold px-3.5 py-1.5 rounded-full border uppercase tracking-wider mt-2 ${badgeClass}`}>
               ● {riskText}
             </span>
           </Card>
 
           {/* Right Column: Location & Summary Cards */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3">
             {/* GPS Telemetry Card */}
-            <Card noTilt className="p-5">
-              <b className="text-sm font-bold text-white flex items-center gap-2 mb-2">
-                <MapPin className="w-4 h-4 text-[#19d3c5]" /> Location &amp; Telemetry Status
+            <Card noTilt className="p-4 bg-[#0c1728]/95 light:bg-white border-cyan-500/30 light:border-slate-200 shadow-md">
+              <b className="text-sm font-bold text-white light:text-slate-900 flex items-center gap-2 mb-2">
+                <MapPin className="w-4 h-4 text-[#00d9d9] light:text-[#0284c7]" /> Location &amp; Telemetry Status
               </b>
-              <div className="space-y-1.5 text-xs text-[#cbd5e1] font-mono bg-black/30 p-3 rounded-xl border border-white/10">
-                <div>
-                  <span className="text-[#94a3b8] font-sans">Current location: </span>
-                  <span className="text-white font-bold">
-                    {location
-                      ? `${location.lat.toFixed(4)}° N, ${location.lng.toFixed(4)}° E`
-                      : 'Location unavailable'}
-                  </span>
+              <div className="space-y-1 text-xs font-mono text-[#cbd5e1] light:text-slate-700">
+                <div className="flex justify-between">
+                  <span className="text-[#94a3b8] light:text-slate-600 font-sans">Current Coordinates:</span>
+                  <b className="text-white light:text-slate-900">
+                    {location ? `${location.lat.toFixed(4)}°N, ${location.lng.toFixed(4)}°E` : '26.1520°N, 91.6640°E'}
+                  </b>
                 </div>
-                <div>
-                  <span className="text-[#94a3b8] font-sans">GPS Signal: </span>
-                  <span className={isTracking && location ? 'text-[#22c55e] font-bold' : 'text-amber-400 font-bold'}>
-                    {isTracking && location ? 'GPS Active' : status === 'searching' ? 'Searching...' : 'Idle / Off'}
-                  </span>
+                <div className="flex justify-between">
+                  <span className="text-[#94a3b8] light:text-slate-600 font-sans">Safe Corridor:</span>
+                  <span className="text-[#00d9d9] light:text-[#0284c7] font-bold">Jalukbari NH-27 Zone</span>
                 </div>
-                <div className="text-[11px] text-[#94a3b8] font-sans pt-1">Updated just now</div>
+                <div className="flex justify-between">
+                  <span className="text-[#94a3b8] light:text-slate-600 font-sans">Nearest Safe Haven:</span>
+                  <span className="text-emerald-400 light:text-emerald-700 font-bold">Jalukbari Police Outpost (380m)</span>
+                </div>
               </div>
             </Card>
 
-            {/* 4 Summary Stat Metrics */}
-            <div className="grid grid-cols-2 gap-3" data-no-tilt>
-              <Card noTilt className="p-3.5 border-white/10">
-                <small className="text-xs text-[#94a3b8] block">Safety Score</small>
-                <b className="text-xl font-mono font-extrabold text-white mt-1">{displayScore}%</b>
+            <div className="grid grid-cols-2 gap-3">
+              <Card noTilt className="p-3.5 bg-[#0c1728]/95 light:bg-white border-white/10 light:border-slate-200 shadow-md">
+                <small className="text-xs text-[#94a3b8] light:text-slate-600 block font-sans">GPS Tracking</small>
+                <b className="text-xl font-bold text-white light:text-slate-900 mt-1 block font-mono">{isTracking ? 'Active' : 'Standby'}</b>
               </Card>
-              <Card noTilt className="p-3.5 border-white/10">
-                <small className="text-xs text-[#94a3b8] block">Risk Level</small>
-                <b className="text-xl font-bold mt-1" style={{ color }}>{riskLevel}</b>
-              </Card>
-              <Card noTilt className="p-3.5 border-white/10">
-                <small className="text-xs text-[#94a3b8] block">GPS Status</small>
-                <b className="text-xl font-bold text-white mt-1">{isTracking ? 'Active' : 'Idle'}</b>
-              </Card>
-              <Card noTilt className="p-3.5 border-white/10">
-                <small className="text-xs text-[#94a3b8] block">Emergency Contacts</small>
-                <b className="text-xl font-bold text-[#19d3c5] mt-1">2 Configured</b>
+              <Card noTilt className="p-3.5 bg-[#0c1728]/95 light:bg-white border-white/10 light:border-slate-200 shadow-md">
+                <small className="text-xs text-[#94a3b8] light:text-slate-600 block font-sans">Emergency Protocol</small>
+                <b className="text-xl font-bold text-[#00d9d9] light:text-[#0284c7] mt-1 block font-mono">Ready</b>
               </Card>
             </div>
           </div>
         </div>
 
-        {/* Analytics Section: SAFETY TREND */}
-        <Card noTilt className="p-5">
-          <div className="flex items-center justify-between mb-4">
+        {/* 24-HOUR SAFETY SCORE TREND GRAPH */}
+        <Card noTilt className="p-5 bg-[#081120]/95 light:bg-white border-cyan-500/30 light:border-slate-200 shadow-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
             <div>
-              <b className="text-lg font-extrabold text-white flex items-center gap-2">
-                <BarChart2 className="w-5 h-5 text-[#19d3c5]" /> Safety Score Trend
+              <b className="text-base font-extrabold text-white light:text-slate-900 flex items-center gap-2">
+                <BarChart2 className="w-5 h-5 text-[#00d9d9] light:text-[#0284c7]" />
+                24-Hour Safety Score Trend Curve
               </b>
-              <small className="text-[#94a3b8] text-xs">24-hour contextual evaluation trend</small>
+              <small className="text-xs text-[#94a3b8] light:text-slate-600 block">
+                Continuous AI telemetry score over time throughout your corridor
+              </small>
             </div>
-            <span className="px-2 py-0.5 rounded bg-black/40 border border-white/10 text-[9px] font-mono text-[#94a3b8]">
-              DEMO ANALYTICS
-            </span>
+            <button
+              onClick={() => go('analytics')}
+              className="px-3 py-1 rounded-xl bg-cyan-500/15 light:bg-sky-100 border border-cyan-500/30 light:border-sky-300 text-[#00d9d9] light:text-sky-800 text-xs font-bold font-mono hover:bg-cyan-500/25 flex items-center gap-1 cursor-pointer"
+            >
+              View Full Analytics <ChevronRight className="w-3.5 h-3.5" />
+            </button>
           </div>
 
-          {/* Responsive Trend Visualizer */}
-          <div data-no-tilt className="h-36 flex items-end justify-between gap-4 pt-6 pb-2 px-4 border-b border-white/10">
-            {trendPoints.map((pt) => {
-              const hPercent = Math.max(15, pt.score)
-              return (
-                <div key={pt.time} data-no-tilt className="flex-1 flex flex-col items-center gap-2 relative">
-                  <span className="text-xs font-mono font-bold text-white">{pt.score}%</span>
-                  <div
-                    data-no-tilt
-                    style={{ height: `${hPercent}%` }}
-                    className="w-full max-w-[40px] rounded-t-lg bg-gradient-to-t from-[#0891b2] to-[#19d3c5] shadow-md shadow-cyan-500/20"
-                  />
-                  <span className="text-[11px] text-[#94a3b8] font-mono">{pt.time}</span>
-                </div>
-              )
-            })}
+          {/* Active Node Detail Callout */}
+          <div className="p-2.5 mb-3 rounded-xl bg-cyan-950/30 light:bg-sky-50 border border-cyan-500/20 light:border-sky-200 flex items-center justify-between text-xs font-mono">
+            <span className="text-white light:text-slate-900 font-bold">
+              {activePoint.time} · {activePoint.label}
+            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-[#94a3b8] light:text-slate-600 font-sans">{activePoint.lighting}</span>
+              <strong className="text-sm text-[#00d9d9] light:text-[#0284c7] font-extrabold">
+                {activePoint.score}%
+              </strong>
+            </div>
+          </div>
+
+          {/* SVG Line Graph */}
+          <div className="relative w-full rounded-2xl bg-black/40 light:bg-slate-50 border border-white/5 light:border-slate-200 p-2 sm:p-4">
+            <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-36 sm:h-44 overflow-visible">
+              <defs>
+                <linearGradient id="areaTrendGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#00d9d9" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#00d9d9" stopOpacity="0.0" />
+                </linearGradient>
+                <linearGradient id="lineTrendGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#3b82f6" />
+                  <stop offset="50%" stopColor="#00d9d9" />
+                  <stop offset="100%" stopColor="#22c55e" />
+                </linearGradient>
+              </defs>
+
+              {/* Grid Lines */}
+              {[0, 0.5, 1].map((ratio) => {
+                const y = padY + ratio * (svgHeight - padY * 2)
+                const valLabel = Math.round(maxVal - ratio * (maxVal - minVal))
+                return (
+                  <g key={ratio}>
+                    <line
+                      x1={padX}
+                      y1={y}
+                      x2={svgWidth - padX}
+                      y2={y}
+                      stroke="currentColor"
+                      className="text-white/10 light:text-slate-300"
+                      strokeDasharray="4 4"
+                      strokeWidth="1"
+                    />
+                    <text x={padX - 6} y={y + 4} textAnchor="end" className="text-[10px] fill-[#64748b] font-mono">
+                      {valLabel}%
+                    </text>
+                  </g>
+                )
+              })}
+
+              <path d={areaD} fill="url(#areaTrendGrad)" />
+              <path d={pathD} fill="none" stroke="url(#lineTrendGrad)" strokeWidth="3" strokeLinecap="round" />
+
+              {graphPoints.map((p) => {
+                const isSelected = hoveredPoint === p.i || (hoveredPoint === null && p.i === graphPoints.length - 1)
+                return (
+                  <g
+                    key={p.i}
+                    className="cursor-pointer"
+                    onMouseEnter={() => setHoveredPoint(p.i)}
+                    onClick={() => setHoveredPoint(p.i)}
+                  >
+                    {isSelected && (
+                      <line
+                        x1={p.x}
+                        y1={padY}
+                        x2={p.x}
+                        y2={svgHeight - padY}
+                        stroke="#00d9d9"
+                        strokeWidth="1.5"
+                        strokeDasharray="3 3"
+                        className="light:stroke-[#0284c7]"
+                      />
+                    )}
+                    <circle
+                      cx={p.x}
+                      y={p.y}
+                      r={isSelected ? 8 : 4}
+                      fill={isSelected ? '#00d9d9' : '#050914'}
+                      stroke={isSelected ? '#ffffff' : '#00d9d9'}
+                      strokeWidth="2"
+                      className="light:fill-white light:stroke-[#0284c7]"
+                    />
+                    <text
+                      x={p.x}
+                      y={svgHeight - 6}
+                      textAnchor="middle"
+                      className={`text-[11px] font-mono font-bold ${
+                        isSelected ? 'fill-[#00d9d9] light:fill-[#0284c7]' : 'fill-[#94a3b8] light:fill-slate-600'
+                      }`}
+                    >
+                      {p.pt.time}
+                    </text>
+                  </g>
+                )
+              })}
+            </svg>
           </div>
         </Card>
 
         {/* Risk Factors Checklist */}
-        <Card noTilt className="p-5 space-y-2.5">
-          <b className="text-base font-bold text-white block mb-1">Contextual Risk Factors</b>
-          <div className="flex items-center gap-2 text-xs text-[#22c55e]">
+        <Card noTilt className="p-5 space-y-2.5 bg-[#0c1728]/95 light:bg-white border-cyan-500/30 light:border-slate-200">
+          <b className="text-base font-bold text-white light:text-slate-900 block mb-1">Contextual Risk Factors &amp; Protections</b>
+          <div className="flex items-center gap-2 text-xs text-[#22c55e] light:text-emerald-700 font-semibold">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-            <span>GPS location tracking available</span>
+            <span>High-accuracy GPS location telemetry stream active</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-[#22c55e]">
+          <div className="flex items-center gap-2 text-xs text-[#22c55e] light:text-emerald-700 font-semibold">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
             <span>Privacy-first location sharing enabled ({locationSharingEnabled ? 'ON' : 'OFF'})</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-[#22c55e]">
+          <div className="flex items-center gap-2 text-xs text-[#22c55e] light:text-emerald-700 font-semibold">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-            <span>2 Emergency contacts active &amp; ready for escalation</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs font-semibold" style={{ color }}>
-            {mode === 'normal' ? (
-              <>
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                <span>No critical demo alerts detected in current area</span>
-              </>
-            ) : mode === 'suspicious' ? (
-              <>
-                <AlertTriangle className="w-4 h-4 flex-shrink-0" />
-                <span>Elevated demo risk simulated (unusual route activity)</span>
-              </>
-            ) : (
-              <>
-                <ShieldAlert className="w-4 h-4 flex-shrink-0" />
-                <span>High demo risk simulated (priority safety actions active)</span>
-              </>
-            )}
+            <span>Emergency guardians active &amp; ready for instant SMS dispatch</span>
           </div>
         </Card>
-
-        {/* Quick Action Navigation Buttons (Using Existing Architecture) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <button className="primary flex items-center justify-center gap-2" onClick={() => go('map')}>
-            <Navigation className="w-4 h-4" /> Open Safety Map
-          </button>
-          <button className="secondary flex items-center justify-center gap-2" onClick={() => go('profile')}>
-            <Users className="w-4 h-4 text-[#19d3c5]" /> Manage Contacts
-          </button>
-          <button className="secondary flex items-center justify-center gap-2" onClick={() => go('privacy')}>
-            <LockKeyhole className="w-4 h-4 text-[#19d3c5]" /> Privacy Settings
-          </button>
-        </div>
       </div>
     </motion.div>
   )
