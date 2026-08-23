@@ -4,10 +4,13 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Check as CheckIcon } from 'lucide-react'
 import { RiskMode, Screen } from '@/types'
 import { useGeolocation } from '@/hooks/useGeolocation'
+import { useAuth } from '@/contexts/AuthContext'
 import { Nav } from '@/components/ui/Nav'
 import { RecipientLiveSessionModal } from '@/components/ui/RecipientLiveSessionModal'
+import { EmergencyContactSetupModal } from '@/components/ui/EmergencyContactSetupModal'
 import { AnalyticsScreen } from '@/components/screens/AnalyticsScreen'
 import { AreaSafetyScreen } from '@/components/screens/AreaSafetyScreen'
+import { AuthScreen } from '@/components/screens/AuthScreen'
 import { CheckScreen } from '@/components/screens/CheckScreen'
 import { ContactScreen } from '@/components/screens/ContactScreen'
 import { EmergencyScreen } from '@/components/screens/EmergencyScreen'
@@ -36,9 +39,11 @@ const FALLBACK_PARENTS: Record<Screen, Screen> = {
   areaSafety: 'home',
   profile: 'home',
   privacy: 'profile',
+  auth: 'home',
 }
 
 export default function Page() {
+  const { user, isAuthenticated, isEmergencySetupModalOpen, closeEmergencySetupModal } = useAuth()
   const [screen, setScreen] = useState<Screen>('home')
   const [historyStack, setHistoryStack] = useState<Screen[]>(['home'])
   const [score, setScore] = useState<number>(92)
@@ -255,6 +260,8 @@ export default function Page() {
         )
       case 'privacy':
         return <PrivacyScreen go={go} goBack={goBack} />
+      case 'auth':
+        return <AuthScreen onSuccess={() => go('home')} go={go} />
       default:
         return (
           <HomeScreen
@@ -271,7 +278,12 @@ export default function Page() {
     }
   }
 
-  const showNav = MAIN_TABS.includes(screen)
+  // If user is explicitly logged out, render AuthScreen
+  if (!isAuthenticated && screen !== 'auth') {
+    return <AuthScreen onSuccess={() => go('home')} go={go} />
+  }
+
+  const showNav = MAIN_TABS.includes(screen) && isAuthenticated
 
   return (
     <main className="shell">
@@ -286,6 +298,11 @@ export default function Page() {
       <RecipientLiveSessionModal
         token={recipientToken}
         onClose={() => setRecipientToken(null)}
+      />
+      {/* Dynamic Emergency Contacts Setup / Manager Modal */}
+      <EmergencyContactSetupModal
+        isOpen={isEmergencySetupModalOpen}
+        onClose={closeEmergencySetupModal}
       />
     </main>
   )

@@ -1,14 +1,25 @@
 'use client'
 
 import React, { useState } from 'react'
-import { ArrowLeft, Bell, LockKeyhole, User } from 'lucide-react'
+import { ArrowLeft, Bell, HeartHandshake, LockKeyhole, LogOut, User } from 'lucide-react'
 import { HeaderProps } from '@/types'
+import { useAuth } from '@/contexts/AuthContext'
 import { NotificationCenterModal } from '@/components/ui/NotificationCenterModal'
 
 export const Header: React.FC<HeaderProps> = ({ title, back }) => {
+  const { user, logout, openEmergencySetupModal } = useAuth()
   const [showProfileMenu, setShowProfileMenu] = useState<boolean>(false)
   const [hasUnreadNotifs, setHasUnreadNotifs] = useState<boolean>(true)
   const [showNotifications, setShowNotifications] = useState<boolean>(false)
+
+  const userInitials = user?.name
+    ? user.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
+    : 'RS'
 
   return (
     <>
@@ -53,29 +64,42 @@ export const Header: React.FC<HeaderProps> = ({ title, back }) => {
           <div className="relative">
             <button
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00d9d9] to-[#3b82f6] border-2 border-[#050914] flex items-center justify-center font-extrabold text-[#050914] text-xs shadow-md hover:scale-105 transition-transform"
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00d9d9] to-[#3b82f6] border-2 border-[#050914] flex items-center justify-center font-extrabold text-[#050914] text-xs shadow-md hover:scale-105 transition-transform font-mono cursor-pointer"
               title="Profile Menu"
             >
-              RS
+              {userInitials}
             </button>
 
             {showProfileMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-[#0c1728] border border-cyan-500/30 rounded-xl shadow-2xl p-2 z-50 text-xs font-sans">
+              <div className="absolute right-0 mt-2 w-52 bg-[#0c1728] border border-cyan-500/30 rounded-xl shadow-2xl p-2 z-50 text-xs font-sans">
                 <div className="p-2 border-b border-white/10 mb-1">
-                  <b className="text-white block font-bold">Riya Sharma</b>
-                  <small className="text-[#00d9d9]">Privacy Protected</small>
+                  <b className="text-white block font-bold truncate">{user?.name || 'Riya Sharma'}</b>
+                  <small className="text-[#00d9d9] font-mono block truncate">
+                    {user?.phone || '+91 88227 17429'}
+                  </small>
+                  {user?.age && (
+                    <small className="text-[#94a3b8] font-mono block">Age: {user.age} yrs</small>
+                  )}
                 </div>
                 <button
-                  onClick={() => setShowProfileMenu(false)}
-                  className="w-full text-left px-3 py-2 rounded-lg text-[#cbd5e1] hover:bg-white/10 hover:text-white flex items-center gap-2"
+                  onClick={() => {
+                    setShowProfileMenu(false)
+                    openEmergencySetupModal()
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-lg text-[#cbd5e1] hover:bg-white/10 hover:text-white flex items-center gap-2 cursor-pointer"
                 >
-                  <User className="w-3.5 h-3.5 text-[#00d9d9]" /> Profile Settings
+                  <HeartHandshake className="w-3.5 h-3.5 text-[#00d9d9]" /> Emergency Contacts
                 </button>
                 <button
-                  onClick={() => setShowProfileMenu(false)}
-                  className="w-full text-left px-3 py-2 rounded-lg text-[#cbd5e1] hover:bg-white/10 hover:text-white flex items-center gap-2"
+                  onClick={() => {
+                    setShowProfileMenu(false)
+                    if (confirm('Sign out of SAKHI profile?')) {
+                      logout()
+                    }
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 flex items-center gap-2 cursor-pointer"
                 >
-                  <LockKeyhole className="w-3.5 h-3.5 text-[#00d9d9]" /> Safety Capsule
+                  <LogOut className="w-3.5 h-3.5" /> Sign Out
                 </button>
               </div>
             )}

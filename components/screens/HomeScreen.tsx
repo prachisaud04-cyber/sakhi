@@ -25,9 +25,9 @@ import {
 import { HomeProps, RiskMode } from '@/types'
 import {
   EmergencyContact,
-  INITIAL_EMERGENCY_CONTACTS,
   initiateCellularCall,
 } from '@/constants/contacts'
+import { useAuth } from '@/contexts/AuthContext'
 import { useCriticalBatteryAutoAlert } from '@/hooks/useCriticalBatteryAutoAlert'
 import { useDeviceTelemetry } from '@/hooks/useDeviceTelemetry'
 import { useLiveLocationSession } from '@/hooks/useLiveLocationSession'
@@ -54,6 +54,7 @@ export const HomeScreen: React.FC<HomeProps> = ({
   location,
   isTracking,
 }) => {
+  const { user, contacts } = useAuth()
   const [isEmergencyCallingOpen, setIsEmergencyCallingOpen] = useState<boolean>(false)
   const [isAudioRecorderOpen, setIsAudioRecorderOpen] = useState<boolean>(false)
   const [isQuickToolsOpen, setIsQuickToolsOpen] = useState<boolean>(false)
@@ -76,7 +77,8 @@ export const HomeScreen: React.FC<HomeProps> = ({
     batteryLevel: telemetry.batteryLevel,
     isCharging: telemetry.isCharging,
     location,
-    userName: 'Riya Sharma',
+    userName: user?.name || 'Riya Sharma',
+    contacts,
     thresholdPercent: 5,
   })
 

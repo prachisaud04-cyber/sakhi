@@ -14,6 +14,7 @@ export type Screen =
   | 'areaSafety'
   | 'profile'
   | 'privacy'
+  | 'auth'
 
 export type RiskMode = 'normal' | 'suspicious' | 'critical'
 

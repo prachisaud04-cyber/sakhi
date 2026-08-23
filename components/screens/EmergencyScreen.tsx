@@ -24,9 +24,9 @@ import {
 import { EmergencyProps } from '@/types'
 import {
   EmergencyContact,
-  INITIAL_EMERGENCY_CONTACTS,
   initiateCellularCall,
 } from '@/constants/contacts'
+import { useAuth } from '@/contexts/AuthContext'
 import { useAutomatedEmergencyDispatch } from '@/hooks/useAutomatedEmergencyDispatch'
 import { useDeviceTelemetry } from '@/hooks/useDeviceTelemetry'
 import { DesktopCallFallbackModal } from '@/components/ui/DesktopCallFallbackModal'
@@ -41,6 +41,7 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
   location,
   sessionId,
 }) => {
+  const { user, contacts } = useAuth()
   const [fallbackContact, setFallbackContact] = useState<EmergencyContact | null>(null)
   const [manualBroadcastSent, setManualBroadcastSent] = useState<boolean>(false)
   const [whatsAppBroadcastSent, setWhatsAppBroadcastSent] = useState<boolean>(false)
@@ -53,6 +54,9 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
   const stopSirenFnRef = useRef<(() => void) | null>(null)
 
   const telemetry = useDeviceTelemetry()
+
+  const userName = user?.name || 'Riya Sharma'
+  const userPhone = user?.phone || '+91 88227 17429'
 
   const {
     isDispatching,
@@ -102,7 +106,7 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
     // Hardware Haptic SOS Pattern
     telemetry.hapticVibrate([400, 150, 400, 150, 400, 150, 800])
 
-    const recipients = INITIAL_EMERGENCY_CONTACTS.map((c) => ({
+    const recipients = contacts.map((c) => ({
       name: c.name,
       phone: c.normalizedPhone,
     }))
@@ -110,8 +114,8 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
     dispatchAlert({
       type: 'SOS_TRIGGERED',
       sessionId: activeSessionId,
-      userName: 'Riya Sharma',
-      userPhone: '+918822717429',
+      userName,
+      userPhone,
       location: location ?? { lat: 26.152, lng: 91.664, accuracy: 12, timestamp: Date.now() },
       recipients,
       batteryLevel: telemetry.batteryLevel,
@@ -120,14 +124,14 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
 
     // Automatically trigger real-time WhatsApp broadcast window
     const waText = buildDistressMessage()
-    const primaryPhone = INITIAL_EMERGENCY_CONTACTS[0].normalizedPhone.replace('+', '')
+    const primaryPhone = contacts.length > 0 ? contacts[0].normalizedPhone.replace('+', '') : '918822717429'
     setTimeout(() => {
       window.open(
         `https://api.whatsapp.com/send?phone=${primaryPhone}&text=${encodeURIComponent(waText)}`,
         '_blank'
       )
     }, 800)
-  }, [dispatchAlert, activeSessionId, location, journeyContext, telemetry])
+  }, [dispatchAlert, activeSessionId, location, journeyContext, telemetry, contacts, userName, userPhone])
 
   // Toggle synthesized hardware siren
   const handleToggleSiren = () => {
@@ -154,7 +158,7 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
   }, [])
 
   const handleResend = () => {
-    const recipients = INITIAL_EMERGENCY_CONTACTS.map((c) => ({
+    const recipients = contacts.map((c) => ({
       name: c.name,
       phone: c.normalizedPhone,
     }))
@@ -162,8 +166,8 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
     dispatchAlert({
       type: 'SOS_TRIGGERED',
       sessionId: activeSessionId,
-      userName: 'Riya Sharma',
-      userPhone: '+918822717429',
+      userName,
+      userPhone,
       location: location ?? { lat: 26.152, lng: 91.664, accuracy: 12, timestamp: Date.now() },
       recipients,
       batteryLevel: telemetry.batteryLevel,
@@ -189,7 +193,7 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
       ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`
       : '26.1520, 91.6640'
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://sakhi.app'
-    const message = `🚨 SAKHI SOS: Riya needs urgent emergency help! GPS: ${locText}. Track: ${origin}/live/${activeSessionId}. Battery: ${telemetry.batteryStatusText}.`
+    const message = `🚨 SAKHI SOS: ${userName} needs urgent emergency help! GPS: ${locText}. Track: ${origin}/live/${activeSessionId}. Battery: ${telemetry.batteryStatusText}.`
 
     triggerNativeSmsBroadcast([contact.normalizedPhone], message)
   }
@@ -202,12 +206,12 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
   }
 
   const handleNativeSmsBroadcast = () => {
-    const phones = INITIAL_EMERGENCY_CONTACTS.map((c) => c.normalizedPhone)
+    const phones = contacts.map((c) => c.normalizedPhone)
     const locText = location
       ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`
       : '26.1520, 91.6640'
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://sakhi.app'
-    const message = `🚨 SAKHI SOS: Riya needs urgent emergency help! GPS: ${locText}. Live Track: ${origin}/live/${activeSessionId}. Battery: ${telemetry.batteryStatusText}. Contact: +918822717429`
+    const message = `🚨 SAKHI SOS: ${userName} needs urgent emergency help! GPS: ${locText}. Live Track: ${origin}/live/${activeSessionId}. Battery: ${telemetry.batteryStatusText}. Contact: ${userPhone}`
 
     triggerNativeSmsBroadcast(phones, message)
     setManualBroadcastSent(true)
@@ -330,12 +334,12 @@ export const EmergencyScreen: React.FC<EmergencyProps> = ({
               EMERGENCY GUARDIANS (1-TAP REAL-TIME SEND)
             </small>
             <span className="text-[10px] font-mono text-emerald-400">
-              ● 4 GUARDIANS SYNCED
+              ● {contacts.length} GUARDIANS SYNCED
             </span>
           </div>
 
           <div className="grid grid-cols-1 gap-2.5">
-            {INITIAL_EMERGENCY_CONTACTS.map((c) => {
+            {contacts.map((c) => {
               const { wa, sms } = getContactDeliveryStatus(c.normalizedPhone)
 
               return (

@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Plus_Jakarta_Sans } from 'next/font/google'
+import { AuthProvider } from '@/contexts/AuthContext'
 import './globals.css'
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -36,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${plusJakarta.variable}`}>
       <body className="antialiased font-sans bg-[#090b15] text-[#f8fafc]">
-        {children}
+        <AuthProvider>{children}</AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
         <script
           dangerouslySetInnerHTML={{

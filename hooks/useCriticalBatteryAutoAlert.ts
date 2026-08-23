@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { GPSLocation } from '@/types'
-import { INITIAL_EMERGENCY_CONTACTS } from '@/constants/contacts'
+import { EmergencyContact, INITIAL_EMERGENCY_CONTACTS } from '@/constants/contacts'
 import { triggerDeadZoneSmsBroadcast } from '@/lib/offlineSafetyEngine'
 
 export interface UseCriticalBatteryAutoAlertProps {
@@ -10,6 +10,7 @@ export interface UseCriticalBatteryAutoAlertProps {
   isCharging: boolean
   location: GPSLocation | null
   userName?: string
+  contacts?: EmergencyContact[]
   thresholdPercent?: number // defaults to 5%
   onAlertTriggered?: (details: CriticalBatteryAlertDetails) => void
 }
@@ -28,6 +29,7 @@ export function useCriticalBatteryAutoAlert({
   isCharging,
   location,
   userName = 'Riya Sharma',
+  contacts = INITIAL_EMERGENCY_CONTACTS,
   thresholdPercent = 5,
   onAlertTriggered,
 }: UseCriticalBatteryAutoAlertProps) {
@@ -46,6 +48,7 @@ export function useCriticalBatteryAutoAlert({
         ? `https://maps.google.com/?q=${location.lat},${location.lng}`
         : 'https://maps.google.com/?q=26.1520,91.6640'
 
+      const activeContacts = contacts && contacts.length > 0 ? contacts : INITIAL_EMERGENCY_CONTACTS
       const message = `⚠️ SAKHI CRITICAL BATTERY ALERT: ${userName}'s phone battery has dropped to ${currentLevel}% (device shutdown imminent). Last known GPS: ${locStr}. Live Location: ${mapLink}. Please check on her if phone becomes unreachable.`
 
       const details: CriticalBatteryAlertDetails = {
@@ -53,7 +56,7 @@ export function useCriticalBatteryAutoAlert({
         timestamp: Date.now(),
         location,
         message,
-        recipients: INITIAL_EMERGENCY_CONTACTS.map((c) => c.phone),
+        recipients: activeContacts.map((c) => c.phone),
         isSent: true,
       }
 
@@ -66,7 +69,7 @@ export function useCriticalBatteryAutoAlert({
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            recipients: INITIAL_EMERGENCY_CONTACTS.map((c) => c.normalizedPhone),
+            recipients: activeContacts.map((c) => c.normalizedPhone),
             message,
             triggerType: 'CRITICAL_BATTERY_SHUTDOWN',
             batteryLevel: currentLevel,

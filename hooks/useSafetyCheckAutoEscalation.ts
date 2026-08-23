@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { GPSLocation } from '@/types'
-import { INITIAL_EMERGENCY_CONTACTS } from '@/constants/contacts'
+import { EmergencyContact, INITIAL_EMERGENCY_CONTACTS } from '@/constants/contacts'
 import { triggerDeadZoneSmsBroadcast } from '@/lib/offlineSafetyEngine'
 
 export interface VitalsSnapshot {
@@ -23,6 +23,8 @@ export interface UseSafetyCheckAutoEscalationProps {
     accelerationG: number
     batteryLevel: number
   }
+  userName?: string
+  contacts?: EmergencyContact[]
   isJourneyActive?: boolean
   initialDurationSeconds?: number // Default: 600 seconds (10 minutes)
   onEscalateToEmergency?: (reason: string, vitals: VitalsSnapshot) => void
@@ -32,6 +34,8 @@ export interface UseSafetyCheckAutoEscalationProps {
 export function useSafetyCheckAutoEscalation({
   location,
   vitals,
+  userName = 'Riya Sharma',
+  contacts = INITIAL_EMERGENCY_CONTACTS,
   isJourneyActive = true,
   initialDurationSeconds = 600, // 10 minutes
   onEscalateToEmergency,
@@ -135,15 +139,16 @@ export function useSafetyCheckAutoEscalation({
       ? `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}`
       : '26.15200, 91.66400'
     const mapLink = `https://maps.google.com/?q=${locStr}`
+    const activeContacts = contacts && contacts.length > 0 ? contacts : INITIAL_EMERGENCY_CONTACTS
 
-    const message = `🚨 SAKHI 10-MIN UNANSWERED SAFETY ALERT: Riya did not respond to safety check during her journey after "${triggerReason}". Last GPS: ${locStr}. Maps: ${mapLink}. Vitals: HR ${activeSnapshot?.heartRate || 120}bpm, BP ${activeSnapshot?.bloodPressureSystolic || 140}/${activeSnapshot?.bloodPressureDiastolic || 90}mmHg, Batt: ${activeSnapshot?.batteryLevel || 80}%. Immediate action required!`
+    const message = `🚨 SAKHI 10-MIN UNANSWERED SAFETY ALERT: ${userName} did not respond to safety check during her journey after "${triggerReason}". Last GPS: ${locStr}. Maps: ${mapLink}. Vitals: HR ${activeSnapshot?.heartRate || 120}bpm, BP ${activeSnapshot?.bloodPressureSystolic || 140}/${activeSnapshot?.bloodPressureDiastolic || 90}mmHg, Batt: ${activeSnapshot?.batteryLevel || 80}%. Immediate action required!`
 
     try {
       await fetch('/api/dispatch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          recipients: INITIAL_EMERGENCY_CONTACTS.map((c) => c.normalizedPhone),
+          recipients: activeContacts.map((c) => c.normalizedPhone),
           message,
           triggerType: 'UNANSWERED_SAFETY_CHECK_TIMEOUT',
           location,
@@ -159,7 +164,7 @@ export function useSafetyCheckAutoEscalation({
     if (onEscalateToEmergency && activeSnapshot) {
       onEscalateToEmergency('10-Minute Unanswered Vitals Check', activeSnapshot)
     }
-  }, [location, triggerReason, activeSnapshot, onEscalateToEmergency])
+  }, [location, triggerReason, activeSnapshot, onEscalateToEmergency, contacts, userName])
 
   // 5. User confirms: "Yes, I Am Safe" -> Guarantees close and suppresses re-triggers
   const confirmSafe = useCallback(() => {
@@ -185,15 +190,16 @@ export function useSafetyCheckAutoEscalation({
       ? `${location.lat.toFixed(5)}, ${location.lng.toFixed(5)}`
       : '26.15200, 91.66400'
     const mapLink = `https://maps.google.com/?q=${locStr}`
+    const activeContacts = contacts && contacts.length > 0 ? contacts : INITIAL_EMERGENCY_CONTACTS
 
-    const message = `🚨 SAKHI USER DISTRESS ALERT: Riya confirmed "I NEED HELP" during safety check (${triggerReason})! Last GPS: ${locStr}. Maps: ${mapLink}. Vitals: HR ${activeSnapshot?.heartRate || 128}bpm. Call 112 or assist immediately!`
+    const message = `🚨 SAKHI USER DISTRESS ALERT: ${userName} confirmed "I NEED HELP" during safety check (${triggerReason})! Last GPS: ${locStr}. Maps: ${mapLink}. Vitals: HR ${activeSnapshot?.heartRate || 128}bpm. Call 112 or assist immediately!`
 
     try {
       await fetch('/api/dispatch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          recipients: INITIAL_EMERGENCY_CONTACTS.map((c) => c.normalizedPhone),
+          recipients: activeContacts.map((c) => c.normalizedPhone),
           message,
           triggerType: 'USER_CONFIRMED_DISTRESS',
           location,
@@ -208,7 +214,7 @@ export function useSafetyCheckAutoEscalation({
     if (onEscalateToEmergency && activeSnapshot) {
       onEscalateToEmergency('User Confirmed Distress', activeSnapshot)
     }
-  }, [location, triggerReason, activeSnapshot, onEscalateToEmergency])
+  }, [location, triggerReason, activeSnapshot, onEscalateToEmergency, contacts, userName])
 
   const formatRemainingTime = (secs: number) => {
     const mins = Math.floor(secs / 60)

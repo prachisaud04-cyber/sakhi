@@ -20,6 +20,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { LiveProps } from '@/types'
+import { useAuth } from '@/contexts/AuthContext'
 import { useCriticalBatteryAutoAlert } from '@/hooks/useCriticalBatteryAutoAlert'
 import { useDeviceTelemetry } from '@/hooks/useDeviceTelemetry'
 import { useDynamicRouteSafety } from '@/hooks/useDynamicRouteSafety'
@@ -34,13 +35,6 @@ import { Pill } from '@/components/ui/Pill'
 import { Ring } from '@/components/ui/Ring'
 import { SafetyCheckModal } from '@/components/ui/SafetyCheckModal'
 
-const DEFAULT_CORRIDOR_COORDS = [
-  { lat: 26.152, lng: 91.664 },
-  { lat: 26.158, lng: 91.701 },
-  { lat: 26.175, lng: 91.765 },
-  { lat: 26.202, lng: 91.825 },
-]
-
 export const LiveScreen: React.FC<LiveProps> = ({
   go,
   goBack,
@@ -54,13 +48,17 @@ export const LiveScreen: React.FC<LiveProps> = ({
   stopTracking,
   locationSharingEnabled,
 }) => {
+  const { user, contacts } = useAuth()
   const [destination, setDestination] = useState<string>('Narengi Tiniali')
   const [origin, setOrigin] = useState<string>('Gauhati University')
   const [durationMinutes, setDurationMinutes] = useState<number>(26)
   const [selectedRouteId, setSelectedRouteId] = useState<string>('route-recommended')
-  const [routeCoordinates, setRouteCoordinates] = useState<{ lat: number; lng: number }[]>(DEFAULT_CORRIDOR_COORDS)
-
-  const telemetry = useDeviceTelemetry()
+  const [routeCoordinates, setRouteCoordinates] = useState<{ lat: number; lng: number }[]>([
+    { lat: 26.152, lng: 91.664 },
+    { lat: 26.162, lng: 91.71 },
+    { lat: 26.175, lng: 91.755 },
+    { lat: 26.185, lng: 91.795 },
+  ])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -82,6 +80,8 @@ export const LiveScreen: React.FC<LiveProps> = ({
     }
   }, [])
 
+  const telemetry = useDeviceTelemetry()
+
   // Critical Battery (0% / 5% Shutdown Guard) Auto-Alert Hook
   const {
     isAlertModalOpen: isBatteryAlertModalOpen,
@@ -92,7 +92,8 @@ export const LiveScreen: React.FC<LiveProps> = ({
     batteryLevel: telemetry.batteryLevel,
     isCharging: telemetry.isCharging,
     location,
-    userName: 'Riya Sharma',
+    userName: user?.name || 'Riya Sharma',
+    contacts,
     thresholdPercent: 5,
   })
 
@@ -120,6 +121,8 @@ export const LiveScreen: React.FC<LiveProps> = ({
       accelerationG: wearableTelemetry.acceleration.totalG,
       batteryLevel: telemetry.batteryLevel,
     },
+    userName: user?.name || 'Riya Sharma',
+    contacts,
     isJourneyActive: isTracking || true,
     initialDurationSeconds: 600, // 10 minutes
     onEscalateToEmergency: () => {
