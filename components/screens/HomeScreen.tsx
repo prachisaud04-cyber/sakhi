@@ -141,27 +141,27 @@ export const HomeScreen: React.FC<HomeProps> = ({
       <Header />
       <div className="content">
         {/* Quick Accessible Theme Switch Bar on Dashboard */}
-        <div className="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/10 dark:bg-[#0c1728]/80 dark:border-cyan-500/30 shadow-lg">
+        <div className="flex items-center justify-between p-3 rounded-2xl bg-[#0c1728]/80 light:bg-white border border-cyan-500/30 light:border-slate-200 shadow-md">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#00d9d9]/15 border border-[#00d9d9]/30 flex items-center justify-center text-[#00d9d9]">
+            <div className="w-9 h-9 rounded-xl bg-cyan-500/15 light:bg-sky-100 border border-cyan-500/30 light:border-sky-200 flex items-center justify-center text-[#00d9d9] light:text-[#0284c7]">
               <Palette className="w-4 h-4" />
             </div>
             <div>
-              <b className="text-xs text-white block">Theme Mode</b>
-              <small className="text-[11px] text-[#94a3b8] font-mono">
-                Active: <span className="text-[#00d9d9] font-bold">{resolvedTheme === 'dark' ? 'Dark Cyber' : 'Light Mode'}</span>
+              <b className="text-xs text-white light:text-slate-900 block font-bold">Theme Mode</b>
+              <small className="text-[11px] text-[#94a3b8] light:text-slate-600 font-mono">
+                Active: <span className="text-[#00d9d9] light:text-[#0284c7] font-bold">{resolvedTheme === 'dark' ? 'Dark Cyber' : 'Light Mode'}</span>
               </small>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 bg-black/30 p-1 rounded-xl border border-white/5 font-mono text-xs">
+          <div className="flex items-center gap-1 bg-black/40 light:bg-slate-100 p-1 rounded-xl border border-white/5 light:border-slate-200 font-mono text-xs">
             <button
               type="button"
               onClick={() => setTheme('dark')}
               className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 resolvedTheme === 'dark'
                   ? 'bg-[#00d9d9] text-[#050914] shadow-md shadow-cyan-500/20'
-                  : 'text-[#94a3b8] hover:text-white'
+                  : 'text-[#94a3b8] light:text-slate-600 hover:text-white light:hover:text-slate-900'
               }`}
             >
               <Moon className="w-3.5 h-3.5" /> Dark
@@ -171,8 +171,8 @@ export const HomeScreen: React.FC<HomeProps> = ({
               onClick={() => setTheme('light')}
               className={`px-3 py-1.5 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
                 resolvedTheme === 'light'
-                  ? 'bg-[#00d9d9] text-[#050914] shadow-md shadow-cyan-500/20'
-                  : 'text-[#94a3b8] hover:text-white'
+                  ? 'bg-[#0284c7] text-white shadow-md shadow-sky-500/30'
+                  : 'text-[#94a3b8] light:text-slate-600 hover:text-white light:hover:text-slate-900'
               }`}
             >
               <Sun className="w-3.5 h-3.5" /> Light
